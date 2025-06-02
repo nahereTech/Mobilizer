@@ -5,12 +5,12 @@ import 'package:flutter/services.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:mobilizer/common/common/navigation.dart';
 import 'package:mobilizer/common/common/sharepreference.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 import 'package:mobilizer/common/common/constants.dart';
 import 'package:mobilizer/pages/home/home.dart';
 import 'package:mobilizer/pages/login/login.dart';
 import 'package:mobilizer/pages/profile/profile.dart';
 import 'package:http/http.dart' as http;
+import 'package:shared_preferences/shared_preferences.dart';
 
 class RegisterOtpScreen extends StatefulWidget {
   static String routeName = 'register_otp_screen';
@@ -27,6 +27,23 @@ class _RegisterOtpScreenState extends State<RegisterOtpScreen> {
   final _controllerCode = TextEditingController();
   bool loading = false;
   bool loadingOTP = false;
+  String? backgroundImageUrl; // Add variable for background image
+
+  @override
+  void initState() {
+    super.initState();
+    _loadBackgroundImage(); // Load background image
+  }
+
+  Future<void> _loadBackgroundImage() async {
+    // Fetch the background image URL from SharedPreferences
+    String? imageUrl = await AppSharedPreferences.getValue(key: 'presentation_org_bg');
+    print("Background Image URL: $imageUrl");
+    setState(() {
+      backgroundImageUrl = imageUrl ??
+          'https://imagedelivery.net/BgK_7WpdFl6ls9CBX3q89Q/6980fb4b-1bc4-4be4-eb06-93b39e6fb000/public';
+    });
+  }
 
   Future<void> _verifyOtp(String email, String code) async {
     setState(() {
@@ -98,16 +115,12 @@ class _RegisterOtpScreenState extends State<RegisterOtpScreen> {
     }
   }
 
-
-
   Future<void> _requestOtp(String email) async {
     setState(() {
       loadingOTP = true;
     });
 
     try {
-      // Add your endpoint for requesting OTP if available
-      // For now, I'll assume it's a similar endpoint
       final response = await http.post(
         Uri.parse('${base_url}user/request_otp_endpoint'), // Replace with actual endpoint
         headers: {
@@ -146,170 +159,207 @@ class _RegisterOtpScreenState extends State<RegisterOtpScreen> {
     }
   }
 
+  // Method to set system UI overlay style based on theme
+  void _setSystemUIOverlayStyle(BuildContext context) {
+    final Brightness brightness = MediaQuery.of(context).platformBrightness;
+    final bool isDarkMode = brightness == Brightness.dark;
+
+    SystemChrome.setSystemUIOverlayStyle(SystemUiOverlayStyle(
+      statusBarColor: Colors.transparent, // Transparent status bar
+      statusBarIconBrightness: isDarkMode ? Brightness.light : Brightness.dark,
+      systemNavigationBarColor: isDarkMode ? Colors.black : Colors.white,
+      systemNavigationBarIconBrightness: isDarkMode ? Brightness.light : Brightness.dark,
+    ));
+  }
+
   @override
   Widget build(BuildContext context) {
-    SystemChrome.setSystemUIOverlayStyle(SystemUiOverlayStyle(
-      statusBarColor: Colors.white,
-      statusBarIconBrightness: Brightness.dark,
-      systemNavigationBarColor: Colors.white,
-      systemNavigationBarIconBrightness: Brightness.dark,
-    ));
+    // Apply the system UI overlay style dynamically
+    _setSystemUIOverlayStyle(context);
 
     return WillPopScope(
       onWillPop: () async => false,
-      child: Scaffold(
-        resizeToAvoidBottomInset: true,
-        key: _scaffoldkey,
-        body: Form(
-          key: _formKey,
-          child: Container(
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-              children: [
-                Column(
-                  children: [
-                    Container(
-                      height: 45,
-                      width: 45,
-                      alignment: Alignment.center,
-                      child: Image.asset(
-                        "images/icon_blue.png",
-                        fit: BoxFit.contain,
-                      ),
-                    ),
-                    const SizedBox(height: 50),
-                    const Center(
-                      child: Padding(
-                        padding: EdgeInsets.symmetric(horizontal: 50.0),
-                        child: Text(
-                          'Please input the code sent to your email',
-                          textAlign: TextAlign.center,
-                          style: TextStyle(fontSize: 17, color: Colors.black),
-                        ),
-                      ),
-                    ),
-                    if (loading)
+      child: Stack(
+        children: [
+          // Background image with tint
+          if (backgroundImageUrl != null)
+            Container(
+              // Correct
+              decoration: BoxDecoration(
+                image: DecorationImage(
+                  image: NetworkImage(backgroundImageUrl!),
+                  fit: BoxFit.cover,
+                  colorFilter: ColorFilter.mode(
+                    Colors.black.withOpacity(0.5), // Apply tint
+                    BlendMode.darken,
+                  ),
+                ),
+              ),
+            ),
+          // Main content
+          Scaffold(
+            resizeToAvoidBottomInset: true,
+            key: _scaffoldkey,
+            backgroundColor: Colors.transparent, // Make Scaffold transparent
+            body: Form(
+              key: _formKey,
+              child: SafeArea(
+                child: Container(
+                  padding: const EdgeInsets.only(top: 36.0, bottom: 16.0),
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
                       Container(
-                        width: 80.0,
-                        height: 80.0,
-                        child: SpinKitCircle(
-                          color: Colors.blue,
-                          size: 50.0,
+                        height: 45,
+                        width: 45,
+                        alignment: Alignment.center,
+                        child: Image.asset(
+                          "images/icon_blue.png",
+                          fit: BoxFit.contain,
                         ),
                       ),
-                    SizedBox(height: 10),
-                    Padding(
-                      padding: const EdgeInsets.only(
-                          left: 50, right: 50, top: 16, bottom: 16),
-                      child: TextFormField(
-                        decoration: InputDecoration(
-                          border: OutlineInputBorder(
-                            borderRadius: BorderRadius.circular(15.0),
-                          ),
-                          hintText: 'Enter code',
-                        ),
-                        controller: _controllerCode,
-                        validator: (value) {
-                          if (value == null || value.isEmpty) {
-                            return 'Please Enter Code';
-                          }
-                          var codeValid = RegExp(r"^[a-zA-Z0-9]+").hasMatch(value);
-                          if (!codeValid) {
-                            return 'Please Enter Valid Code';
-                          }
-                          return null;
-                        },
-                      ),
-                    ),
-                    SizedBox(height: 1),
-                    Padding(
-                      padding: const EdgeInsets.symmetric(horizontal: 50.0),
-                      child: Align(
-                        alignment: Alignment.topRight,
-                        child: loadingOTP
-                            ? SpinKitWave(
-                                color: Colors.grey,
-                                size: 15.0,
-                              )
-                            : GestureDetector(
-                                onTap: () => _requestOtp(widget.email),
-                                child: Text(
-                                  "Didn't receive a code?",
-                                  style: TextStyle(
-                                    color: Theme.of(context).brightness == Brightness.dark ? Colors.white : Colors.black,
-                                    fontSize: 15,
-                                  ),
-                                ),
-                              ),
-                      ),
-                    ),
-                    SizedBox(height: 20),
-                    Padding(
-                      padding: const EdgeInsets.symmetric(horizontal: 50.0),
-                      child: ElevatedButton(
-                        onPressed: loading || loadingOTP
-                            ? null
-                            : () async {
-                                if (_formKey.currentState!.validate()) {
-                                  await _verifyOtp(widget.email, _controllerCode.text);
-                                }
-                              },
-                        style: ElevatedButton.styleFrom(
-                          backgroundColor: Color(0xFF00AFEF),
-                          minimumSize: Size(80, 50),
-                          padding: EdgeInsets.symmetric(horizontal: 16),
-                          shape: const RoundedRectangleBorder(
-                            borderRadius: BorderRadius.all(Radius.circular(10)),
+                      const SizedBox(height: 50),
+                      const Center(
+                        child: Padding(
+                          padding: EdgeInsets.symmetric(horizontal: 50.0),
+                          child: Text(
+                            'Please input the code sent to your email',
+                            textAlign: TextAlign.center,
+                            style: TextStyle(fontSize: 17, color: Colors.white), // Changed to white
                           ),
                         ),
-                        child: Row(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          children: [
-                            loading
-                                ? SpinKitWave(
-                                    color: Colors.grey,
-                                    size: 15.0,
-                                  )
-                                : Text(
-                                    'Continue',
+                      ),
+                      if (loading)
+                        Container(
+                          width: 80.0,
+                          height: 80.0,
+                          child: SpinKitCircle(
+                            color: Colors.blue,
+                            size: 50.0,
+                          ),
+                        ),
+                      SizedBox(height: 10),
+                      Padding(
+                        padding: const EdgeInsets.only(
+                            left: 50, right: 50, top: 16, bottom: 16),
+                        child: TextFormField(
+                          decoration: InputDecoration(
+                            filled: true,
+                            fillColor: Colors.white.withOpacity(0.8), // Semi-transparent background
+                            border: OutlineInputBorder(
+                              borderRadius: BorderRadius.circular(15.0),
+                            ),
+                            hintText: 'Enter code',
+                          ),
+                          controller: _controllerCode,
+                          validator: (value) {
+                            if (value == null || value.isEmpty) {
+                              return 'Please Enter Code';
+                            }
+                            var codeValid = RegExp(r"^[a-zA-Z0-9]+").hasMatch(value);
+                            if (!codeValid) {
+                              return 'Please Enter Valid Code';
+                            }
+                            return null;
+                          },
+                        ),
+                      ),
+                      SizedBox(height: 1),
+                      Padding(
+                        padding: const EdgeInsets.symmetric(horizontal: 50.0),
+                        child: Align(
+                          alignment: Alignment.topRight,
+                          child: loadingOTP
+                              ? SpinKitWave(
+                                  color: Colors.grey,
+                                  size: 15.0,
+                                )
+                              : GestureDetector(
+                                  onTap: () => _requestOtp(widget.email),
+                                  child: Text(
+                                    "Didn't receive a code?",
                                     style: TextStyle(
-                                      fontWeight: FontWeight.bold,
-                                      color: Colors.white,
-                                      fontSize: 20.0,
+                                      color: Colors.white, // Changed to white
+                                      fontSize: 15,
                                     ),
                                   ),
-                          ],
+                                ),
                         ),
                       ),
-                    ),
-                    SizedBox(height: 50),
-                    Padding(
-                      padding: const EdgeInsets.symmetric(horizontal: 50.0),
-                      child: GestureDetector(
-                        onTap: () {
-                          Navigator.pushAndRemoveUntil(
-                            context,
-                            MaterialPageRoute(builder: (context) => LoginScreen()),
-                            (Route<dynamic> route) => false,
-                          );
-                        },
-                        child: Text(
-                          "Back To Login",
-                          style: TextStyle(
-                            fontSize: 16,
-                            decoration: TextDecoration.underline,
-                            color: Colors.black,
+                      SizedBox(height: 20),
+                      Padding(
+                        padding: const EdgeInsets.symmetric(horizontal: 50.0),
+                        child: ElevatedButton(
+                          onPressed: loading || loadingOTP
+                              ? null
+                              : () async {
+                                  if (_formKey.currentState!.validate()) {
+                                    await _verifyOtp(widget.email, _controllerCode.text);
+                                  }
+                                },
+                          style: ElevatedButton.styleFrom(
+                            backgroundColor: Color(0xFF00AFEF),
+                            minimumSize: Size(80, 50),
+                            padding: EdgeInsets.symmetric(horizontal: 16),
+                            shape: const RoundedRectangleBorder(
+                              borderRadius: BorderRadius.all(Radius.circular(10)),
+                            ),
+                          ),
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
+                              loading
+                                  ? SpinKitWave(
+                                      color: Colors.grey,
+                                      size: 15.0,
+                                    )
+                                  : Text(
+                                      'Continue',
+                                      style: TextStyle(
+                                        fontWeight: FontWeight.bold,
+                                        color: Colors.white,
+                                        fontSize: 20.0,
+                                      ),
+                                    ),
+                            ],
                           ),
                         ),
                       ),
-                    ),
-                  ],
+                      SizedBox(height: 50),
+                      Padding(
+                        padding: const EdgeInsets.symmetric(horizontal: 50.0),
+                        child: GestureDetector(
+                          onTap: () {
+                            Navigator.pushAndRemoveUntil(
+                              context,
+                              MaterialPageRoute(builder: (context) => LoginScreen()),
+                              (Route<dynamic> route) => false,
+                            );
+                          },
+                          child: Text(
+                            "Back To Login",
+                            style: TextStyle(
+                              fontSize: 16,
+                              decoration: TextDecoration.underline,
+                              color: Colors.white, // Changed to white
+                            ),
+                          ),
+                        ),
+                      ),
+                    ],
+                  ),
                 ),
-              ],
+              ),
             ),
           ),
-        ),
+        ],
       ),
     );
+  }
+
+  @override
+  void dispose() {
+    _controllerCode.dispose();
+    super.dispose();
   }
 }

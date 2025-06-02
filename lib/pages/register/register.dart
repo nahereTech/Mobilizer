@@ -456,6 +456,16 @@ class _RegisterScreenState extends State<RegisterScreen> {
                         //     fit: BoxFit.contain,
                         //   ),
                         // ),
+                        const Center(
+                          child: Text(
+                            'Register',
+                            style: TextStyle(
+                              fontSize: 24, // Adjust size as needed
+                              fontWeight: FontWeight.bold, // Optional
+                              color: Colors.white, // Set text color to white
+                            ),
+                          ),
+                        ),
                         const SizedBox(height: 30.0),
                         Column(
                           children: [

@@ -25,7 +25,7 @@ class _SetOrgPageState extends State<SetOrgPage> {
   Future<void> _fetchOrgs() async {
     try {
       final response = await http.get(
-        Uri.parse('$base_url/mobilizer/orgs'),
+        Uri.parse('${base_url}mobilizer/orgs'),
         headers: {
           'Accept': 'application/json',
           'Content-Type': 'application/json; charset=UTF-8',
@@ -62,7 +62,7 @@ class _SetOrgPageState extends State<SetOrgPage> {
     final prefs = await SharedPreferences.getInstance();
     
     // Store values in SharedPreferences
-    await prefs.setInt('current_org', org['id']);
+    await prefs.setString('current_org', org['id'].toString());
     await prefs.setString('presentation_org_logo', org['logo']);
     await prefs.setString('presentation_org_bg', org['bg']);
     await prefs.setString('org_name', org['name']);

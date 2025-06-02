@@ -287,6 +287,9 @@ class _FeedOutsidePageState extends State<FeedOutsidePage> {
 
   late Timer _timer;
 
+  // Existing state variables...
+  String? _orgLogoUrl; // New state variable for logo URL
+
   @override
   void initState() {
     super.initState();
@@ -333,6 +336,7 @@ class _FeedOutsidePageState extends State<FeedOutsidePage> {
     final prefs = await SharedPreferences.getInstance();
     String? orgName = prefs.getString('orgName');
     String? orgIdString = prefs.getString('orgID');
+    String? orgLogo = prefs.getString('presentation_org_logo'); // Fetch logo from SharedPreferences
 
     if (orgName == null) {
       await prefs.setString('orgName', 'World');
@@ -344,6 +348,7 @@ class _FeedOutsidePageState extends State<FeedOutsidePage> {
       setState(() {
         _orgName = orgName ?? 'World';
         _orgId = orgId;
+        _orgLogoUrl = orgLogo ?? 'assets/mobilizer_logo.jpg'; // Fallback to asset if no logo in SharedPreferences
       });
     }
   }
@@ -790,13 +795,22 @@ class _FeedOutsidePageState extends State<FeedOutsidePage> {
                     leadingWidth: 45,
                     leading: Padding(
                       padding: const EdgeInsets.all(10.0),
-                      child: SizedBox(
-                        width: 25,
-                        height: 25,
-                        child: Image.asset(
-                          'images/icon_blue.png',
-                          fit: BoxFit.contain,
-                        ),
+                      child: CircleAvatar(
+                        radius: 12.5, // Adjust size to match the previous 25x25 image
+                        backgroundImage: _orgLogoUrl!.startsWith('http')
+                            ? NetworkImage(_orgLogoUrl!) // Use network image if URL is from SharedPreferences
+                            : AssetImage(_orgLogoUrl!) as ImageProvider, // Use asset image for fallback
+                        onBackgroundImageError: (error, stackTrace) {
+                          print('Error loading logo: $error');
+                        },
+                        child: _orgLogoUrl == null
+                            ? Icon(
+                                Icons.image,
+                                color: Provider.of<ThemeProvider>(context).isDarkMode
+                                    ? Colors.white
+                                    : Colors.black,
+                              )
+                            : null,
                       ),
                     ),
                     actions: [
@@ -1161,9 +1175,8 @@ class _FeedOutsidePageState extends State<FeedOutsidePage> {
                                       padding: const EdgeInsets.only(left: 16.0, top: 16.0),
                                       child: GestureDetector(
                                         onTap: () {
-                                          // Navigate to PeopleProfile when avatar is clicked
                                           final mapData = {
-                                            'subjectID': post.id.toString(), // Assuming post.id is the user ID
+                                            'subjectID': post.id.toString(),
                                             'picture': post.profilePic,
                                             'full_name': post.fullName,
                                             'username': post.username,
@@ -1203,9 +1216,8 @@ class _FeedOutsidePageState extends State<FeedOutsidePage> {
                                                 Expanded(
                                                   child: GestureDetector(
                                                     onTap: () {
-                                                      // Navigate to PeopleProfile when full name is clicked
                                                       final mapData = {
-                                                        'subjectID': post.id.toString(), // Assuming post.id is the user ID
+                                                        'subjectID': post.id.toString(),
                                                         'picture': post.profilePic,
                                                         'full_name': post.fullName,
                                                         'username': post.username,
@@ -1213,7 +1225,8 @@ class _FeedOutsidePageState extends State<FeedOutsidePage> {
                                                       Navigator.push(
                                                         context,
                                                         MaterialPageRoute(
-                                                          builder: (context) => PeopleProfile(mapData: mapData),
+                                                          builder: (context) =>
+                                                              PeopleProfile(mapData: mapData),
                                                         ),
                                                       );
                                                     },
@@ -1243,9 +1256,8 @@ class _FeedOutsidePageState extends State<FeedOutsidePage> {
                                             const SizedBox(height: 1.0),
                                             GestureDetector(
                                               onTap: () {
-                                                // Navigate to PeopleProfile when username is clicked
                                                 final mapData = {
-                                                  'subjectID': post.id.toString(), // Assuming post.id is the user ID
+                                                  'subjectID': post.id.toString(),
                                                   'picture': post.profilePic,
                                                   'full_name': post.fullName,
                                                   'username': post.username,
@@ -1253,7 +1265,8 @@ class _FeedOutsidePageState extends State<FeedOutsidePage> {
                                                 Navigator.push(
                                                   context,
                                                   MaterialPageRoute(
-                                                    builder: (context) => PeopleProfile(mapData: mapData),
+                                                    builder: (context) =>
+                                                        PeopleProfile(mapData: mapData),
                                                   ),
                                                 );
                                               },
@@ -1496,7 +1509,7 @@ class _FeedOutsidePageState extends State<FeedOutsidePage> {
                                             color: Colors.grey,
                                             size: 18.0,
                                           ),
-                                          onPressed: null, // Handled by PopupMenuButton
+                                          onPressed: null,
                                           padding: EdgeInsets.zero,
                                           constraints: const BoxConstraints(),
                                         ),
@@ -1545,7 +1558,7 @@ class _FeedOutsidePageState extends State<FeedOutsidePage> {
                                     const SizedBox(height: 8),
                                     CircleAvatar(
                                       radius: 30,
-                                      backgroundColor: Colors.grey[300], // Already circular
+                                      backgroundColor: Colors.grey[300],
                                     ),
                                     const SizedBox(height: 8),
                                     Container(
@@ -1553,7 +1566,7 @@ class _FeedOutsidePageState extends State<FeedOutsidePage> {
                                       height: 12,
                                       decoration: BoxDecoration(
                                         color: Colors.grey[300],
-                                        borderRadius: BorderRadius.circular(8), // Rounded corners
+                                        borderRadius: BorderRadius.circular(8),
                                       ),
                                     ),
                                     const SizedBox(height: 4),
@@ -1562,7 +1575,7 @@ class _FeedOutsidePageState extends State<FeedOutsidePage> {
                                       height: 12,
                                       decoration: BoxDecoration(
                                         color: Colors.grey[300],
-                                        borderRadius: BorderRadius.circular(8), // Rounded corners
+                                        borderRadius: BorderRadius.circular(8),
                                       ),
                                     ),
                                   ],
@@ -1571,26 +1584,27 @@ class _FeedOutsidePageState extends State<FeedOutsidePage> {
                             },
                           ),
                         )
-
                       : ListView.builder(
                           scrollDirection: Axis.horizontal,
                           itemCount: _townhalls.length,
                           itemBuilder: (context, index) {
                             final townhall = _townhalls[index];
                             final baseRadius = 30.0;
-                            final reducedRadius = baseRadius * (1 - (townhall.circleReductionPercentage / 100));
+                            final reducedRadius =
+                                baseRadius * (1 - (townhall.circleReductionPercentage / 100));
 
                             return GestureDetector(
-                              onTap: () => _onTownhallTap(townhall.townhallId, townhall.townhallName),
+                              onTap: () =>
+                                  _onTownhallTap(townhall.townhallId, townhall.townhallName),
                               child: Padding(
                                 padding: const EdgeInsets.symmetric(horizontal: 8.0),
                                 child: Column(
-                                  mainAxisAlignment: MainAxisAlignment.start, // Align content to start
+                                  mainAxisAlignment: MainAxisAlignment.start,
                                   children: [
                                     const SizedBox(height: 8),
                                     SizedBox(
-                                      height: 60, // Fixed height for avatar container
-                                      width: 60,  // Fixed width to ensure consistent spacing
+                                      height: 60,
+                                      width: 60,
                                       child: Center(
                                         child: Container(
                                           decoration: BoxDecoration(
@@ -1599,7 +1613,9 @@ class _FeedOutsidePageState extends State<FeedOutsidePage> {
                                               color: townhall.townhallId == _selectedTownhallId
                                                   ? Colors.blue
                                                   : Colors.grey[300]!,
-                                              width: townhall.townhallId == _selectedTownhallId ? 3.0 : 2.0,
+                                              width: townhall.townhallId == _selectedTownhallId
+                                                  ? 3.0
+                                                  : 2.0,
                                             ),
                                             boxShadow: townhall.townhallId == _selectedTownhallId
                                                 ? [
@@ -1614,12 +1630,21 @@ class _FeedOutsidePageState extends State<FeedOutsidePage> {
                                           ),
                                           child: CircleAvatar(
                                             radius: reducedRadius,
-                                            backgroundImage: NetworkImage(townhall.townhallImage),
-                                            onBackgroundImageError: (error, stackTrace) {},
-                                            child: townhall.townhallImage.isEmpty
+                                            backgroundImage: _orgLogoUrl != null &&
+                                                    _orgLogoUrl!.isNotEmpty &&
+                                                    _orgLogoUrl!.startsWith('http')
+                                                ? NetworkImage(_orgLogoUrl!)
+                                                : AssetImage('assets/mobilizer_logo.jpg')
+                                                    as ImageProvider,
+                                            onBackgroundImageError: (error, stackTrace) {
+                                              print('Error loading townhall logo: $error');
+                                            },
+                                            child: _orgLogoUrl == null || _orgLogoUrl!.isEmpty
                                                 ? Icon(
                                                     Icons.group,
-                                                    color: themeProvider.isDarkMode ? Colors.white : Colors.white,
+                                                    color: themeProvider.isDarkMode
+                                                        ? Colors.white
+                                                        : Colors.white,
                                                   )
                                                 : null,
                                           ),
@@ -1636,7 +1661,9 @@ class _FeedOutsidePageState extends State<FeedOutsidePage> {
                                         maxLines: 1,
                                         style: TextStyle(
                                           fontSize: 14,
-                                          color: themeProvider.isDarkMode ? Colors.white : Colors.black,
+                                          color: themeProvider.isDarkMode
+                                              ? Colors.white
+                                              : Colors.black,
                                         ),
                                       ),
                                     ),
@@ -1644,7 +1671,6 @@ class _FeedOutsidePageState extends State<FeedOutsidePage> {
                                     Row(
                                       mainAxisAlignment: MainAxisAlignment.center,
                                       children: [
-                                        // Red dot for unreadMessages
                                         if (townhall.unreadMessages > 0)
                                           Container(
                                             width: 10,
@@ -1655,7 +1681,6 @@ class _FeedOutsidePageState extends State<FeedOutsidePage> {
                                               shape: BoxShape.circle,
                                             ),
                                           ),
-                                        // Amber dot for unreadTownhallInfo
                                         if (townhall.unreadTownhallInfo > 0)
                                           Container(
                                             width: 10,
@@ -1667,8 +1692,9 @@ class _FeedOutsidePageState extends State<FeedOutsidePage> {
                                           ),
                                       ],
                                     ),
-                                    if (townhall.unreadMessages == 0 && townhall.unreadTownhallInfo == 0)
-                                      const SizedBox(height: 10), // Maintain spacing when no dots
+                                    if (townhall.unreadMessages == 0 &&
+                                        townhall.unreadTownhallInfo == 0)
+                                      const SizedBox(height: 10),
                                   ],
                                 ),
                               ),

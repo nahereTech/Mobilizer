@@ -239,17 +239,18 @@ class _LoginScreenState extends State<LoginScreen> {
                   child: ListView(
                     children: [
                       const SizedBox(height: 200.0),
-                      // Container(
-                      //   height: 50,
-                      //   width: 50,
-                      //   alignment: Alignment.center,
-                      //   child: Image.asset(
-                      //     "images/icon_blue.png",
-                      //     fit: BoxFit.contain,
-                      //   ),
-                      // ),
-                      const SizedBox(height: 30.0),
-                      Column(
+                        Center(
+                          child: Text(
+                            'Login',
+                            style: TextStyle(
+                              fontSize: 24, // Adjust size as needed
+                              fontWeight: FontWeight.bold, // Optional
+                              color: Colors.white, // Set text color to white
+                            ),
+                          ),
+                        ),
+                        const SizedBox(height: 30.0),
+                        Column(
                         children: [
                           Padding(
                             padding: const EdgeInsets.only(
@@ -321,8 +322,10 @@ class _LoginScreenState extends State<LoginScreen> {
                                 Text(''),
                                 GestureDetector(
                                   onTap: () {
-                                    Navigator.pushNamed(
-                                        context, ForgotPasswordScreen.routeName);
+                                    Navigator.push(
+                                      context,
+                                      MaterialPageRoute(builder: (context) => ForgotPasswordScreen()),
+                                    );
                                   },
                                   child: const Text(
                                     'Forgot Password?',

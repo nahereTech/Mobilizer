@@ -111,8 +111,8 @@ Future<String?> getDeviceToken() async {
 }
 
 // 12. Runtime modifiable base URL (can't be const)
-// String base_url = "https://townhall.empl-dev.com.ng/api/"; // default to live
-String base_url = "https://townhall.mobi/api/"; // default to live
+// String base_url = "https://mobilizer.empl-dev.com.ng/api/"; // default to live
+String base_url = "https://mobilizer.townhall.mobi/api/"; // default to live
 
 // 13. Dynamically set base_url based on 'server_env' key
 Future<void> setBaseUrlFromEnv() async {
@@ -120,9 +120,9 @@ Future<void> setBaseUrlFromEnv() async {
   String? env = prefs.getString('server_env');
 
   if (env == 'dev') {
-    base_url = "https://townhall.empl-dev.com.ng/api/";
+    base_url = "https://mobilizer.empl-dev.com.ng/api/";
   } else {
-    base_url = "https://townhall.mobi/api/";
+    base_url = "https://mobilizer.townhall.mobi/api/";
   }
 
   // print("Base URL set to: $base_url");
