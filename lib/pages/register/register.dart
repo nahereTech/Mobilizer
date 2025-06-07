@@ -45,6 +45,10 @@ class _RegisterScreenState extends State<RegisterScreen> {
   void initState() {
     super.initState();
     _loadBackgroundImage(); // Load background image
+    // Fetch and print current_org from SharedPreferences
+    AppSharedPreferences.getValue(key: 'current_org').then((value) {
+      print("This is the SP-SP: $value");
+    });
     Future.delayed(Duration.zero, () {
       _fetchTerms();
       _fetchPrivacy();

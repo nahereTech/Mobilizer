@@ -127,6 +127,9 @@ class _ProfileState extends State<Profile> {
     final prefs = await SharedPreferences.getInstance();
     token = prefs.getString('token');
     final savedProfilePhoto = prefs.getString('profile_photo');
+    // Fetch and print current_org from SharedPreferences
+    final currentOrg = prefs.getString('current_org');
+    print("This is the SP-SP: $currentOrg");
     if (savedProfilePhoto != null) {
       setState(() {
         profileImage = savedProfilePhoto;
@@ -432,8 +435,8 @@ class _ProfileState extends State<Profile> {
           // Redirect to OnboardingWorldTownhalls
           Navigator.pushReplacement(
             context,
-            // MaterialPageRoute(builder: (context) => const OnboardingWorldTownhalls()),
-            MaterialPageRoute(builder: (context) => const OnboardingJoinOrg()),
+            MaterialPageRoute(builder: (context) => const OnboardingWorldTownhalls()),
+            // MaterialPageRoute(builder: (context) => const OnboardingJoinOrg()),
            
           );
         } else {
@@ -645,11 +648,13 @@ class _ProfileState extends State<Profile> {
     final isDarkMode = Theme.of(context).brightness == Brightness.dark;
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Profile'),
+        title: const Padding(
+          padding: EdgeInsets.only(left: 8.0), // Adjust the value as needed
+          child: Text('Profile...'),
+        ),
         backgroundColor: Theme.of(context).scaffoldBackgroundColor,
         elevation: 0,
         foregroundColor: Theme.of(context).textTheme.bodyLarge?.color,
-        // 6. Add actions with "X" icon button
         actions: [
           IconButton(
             icon: Icon(Icons.close, color: Theme.of(context).textTheme.bodyLarge?.color),
@@ -661,7 +666,7 @@ class _ProfileState extends State<Profile> {
         children: [
           SafeArea(
             child: SingleChildScrollView(
-              padding: const EdgeInsets.all(16.0),
+              padding: const EdgeInsets.all(30.0),
               child: Form(
                 key: _formKey,
                 child: Column(
@@ -892,8 +897,11 @@ class _ProfileState extends State<Profile> {
                           borderRadius: BorderRadius.circular(8),
                         ),
                       ),
-                      child: const Text('Update Profile', style: TextStyle(fontSize: 16)),
+                      child: const Text('Update Profile', style: TextStyle(fontSize: 22)),
                     ),
+
+                    const SizedBox(height: 30),
+
                   ],
                 ),
               ),

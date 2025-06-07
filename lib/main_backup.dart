@@ -1,6 +1,8 @@
 import 'dart:io';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:flutter/foundation.dart' show kIsWeb;
+import 'package:firebase_core/firebase_core.dart';
+import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -57,6 +59,41 @@ final GlobalKey<NavigatorState> navigatorKey = GlobalKey<NavigatorState>();
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
 
+  // Initialize Firebase
+  try {
+    if (kIsWeb) {
+      await Firebase.initializeApp(
+        options: const FirebaseOptions(
+          apiKey: "your-api-key",
+          appId: "your-app-id",
+          messagingSenderId: "your-messaging-sender-id",
+          projectId: "your-project-id",
+        ),
+      );
+      print("Firebase initialized for web");
+    } else {
+      await Firebase.initializeApp();
+      print("Firebase initialized for mobile");
+
+      final FirebaseMessaging messaging = FirebaseMessaging.instance;
+      await messaging.requestPermission(
+        alert: true,
+        badge: true,
+        provisional: false,
+        sound: true,
+      );
+      FirebaseMessaging.onBackgroundMessage(backgroundHandler);
+
+      String? deviceToken = await messaging.getToken();
+      if (deviceToken != null) {
+        await AppSharedPreferences.setValue(key: 'deviceToken', value: deviceToken);
+        print("Device Token (Mobile): $deviceToken");
+      }
+    }
+  } catch (e) {
+    print("Error initializing Firebase: $e");
+  }
+
   // Initialize dependency injection
   await di.init();
 
@@ -75,7 +112,7 @@ Future<void> _checkCurrentOrg(SharedPreferences prefs) async {
   if (currentOrg == null || currentOrg == 0) {
     print('main.dart _checkCurrentOrg: current_org is blank or 0');
     final org = {
-      'id': "182",
+      'id': "1",
       'logo': 'https://imagedelivery.net/BgK_7WpdFl6ls9CBX3q89Q/8a8f1415-d6fe-44cc-5ce7-d34e25d13400/public',
       'bg': 'https://imagedelivery.net/BgK_7WpdFl6ls9CBX3q89Q/69ab5c95-f314-4caa-d279-bf8d840b0d00/public',
       'name': 'APC',
@@ -131,6 +168,19 @@ class _MyAppState extends State<MyApp> with WidgetsBindingObserver {
     super.initState();
 
     if (!kIsWeb) {
+      FirebaseMessaging.instance.getInitialMessage().then((RemoteMessage? event) {
+        if (event != null) {
+          print('Initial event data: ${event.notification?.title}');
+        }
+      });
+
+      FirebaseMessaging.instance.getToken().then((String? deviceToken) async {
+        if (deviceToken != null) {
+          await AppSharedPreferences.setValue(key: 'deviceToken', value: deviceToken);
+          print("Device Token (Mobile): $deviceToken");
+        }
+      });
+
       // Handle initial deep link
       _handleInitialLink();
 
@@ -144,7 +194,7 @@ class _MyAppState extends State<MyApp> with WidgetsBindingObserver {
         print('Error receiving URI: $err');
       });
     } else {
-      print("Running on web: Skipping deep link setup.");
+      print("Running on web: Skipping Firebase Messaging and deep link setup.");
     }
 
     WidgetsBinding.instance.addObserver(this);
@@ -248,4 +298,12 @@ Future<String?> getUserID() async {
 
 Future<String?> getMessageCounts() async {
   return await AppSharedPreferences.getValue(key: 'message_counts');
+}
+
+Future<void> backgroundHandler(RemoteMessage message) async {
+  print("This is the message from background");
+  print(message.notification?.title);
+  print(message.notification?.body);
+  print(message.data);
+  print(message.data['ref_id']);
 }

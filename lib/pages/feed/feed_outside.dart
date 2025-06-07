@@ -2,6 +2,7 @@ import 'dart:convert';
 import 'dart:async'; // Add this import for Timer
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:mobilizer/pages/onboarding/onboarding_world_townhalls.dart';
 import 'package:mobilizer/pages/post/post_details.dart';
 import 'package:provider/provider.dart';
 import 'package:shimmer/shimmer.dart';
@@ -160,12 +161,14 @@ class PostImage {
 }
 
 // Service to fetch townhall list
+// Service to fetch townhall list
 class TownhallService {
   Future<Map<String, dynamic>> fetchTownhallList() async {
     final prefs = await SharedPreferences.getInstance();
-    String? orgIdString = prefs.getString('orgID');
-    String? token = prefs.getString('token');
-    int orgId = int.tryParse(orgIdString ?? '1') ?? 1;
+    final token = prefs.getString('token');
+    final orgIdString = prefs.getString('current_org'); // Changed from 'orgID'
+    print("Heloadd ${orgIdString}");
+    final orgId = int.tryParse(orgIdString ?? '182') ?? 182;
 
     final headers = {
       'Authorization': '$token',
@@ -186,8 +189,8 @@ class TownhallService {
         };
       } else {
         if (jsonData['tag'] == "no_permission") {
-          await prefs.setString('orgID', '1');
-          await prefs.setString('orgName', 'World');
+          await prefs.setString('current_org', '1'); // Changed from 'orgID'
+          await prefs.setString('org_name', 'World'); // Use 'org_name' to match _loadOrgData
           return {
             'townhalls': <Townhall>[], // Empty list
             'tag': 'no_permission',
@@ -275,8 +278,8 @@ class _FeedOutsidePageState extends State<FeedOutsidePage> {
   int _currentPage = 1;
   final int _limit = 10;
   int? _selectedTownhallId;
-  String _orgName = 'World';
-  int _orgId = 1;
+  String _orgName = 'World..';
+  int _orgId = 4;
 
   static const double _topSectionHeight = 135.0;
   static const double _bottomMenuHeight = 56.0;
@@ -294,14 +297,21 @@ class _FeedOutsidePageState extends State<FeedOutsidePage> {
   void initState() {
     super.initState();
     print('FeedOutsidePage: initState called');
+    
+    // Print current_org shared preference
+    SharedPreferences.getInstance().then((prefs) {
+      String? currentOrg = prefs.getString('current_org');
+      print('this is sp: $currentOrg');
+    });
+
     _scrollController = ScrollController();
     _scrollController.addListener(_scrollListener);
     _scrollController.addListener(_loadMoreListener);
 
-    // Check user onboarding status
     _checkUserOnboarding();
-
-    _loadOrgData();
+    _loadOrgData().then((_) {
+      print('FeedOutsidePage: _orgId after _loadOrgData: $_orgId');
+    });
 
     _timer = Timer.periodic(const Duration(seconds: 1), (timer) {
       if (mounted) {
@@ -332,23 +342,29 @@ class _FeedOutsidePageState extends State<FeedOutsidePage> {
     // (to LoginScreen, RegisterOtpScreen, or Profile), so we don't need to do anything here
   }
 
+  // Updated _loadOrgData in _FeedOutsidePageState
   Future<void> _loadOrgData() async {
     final prefs = await SharedPreferences.getInstance();
-    String? orgName = prefs.getString('orgName');
-    String? orgIdString = prefs.getString('orgID');
-    String? orgLogo = prefs.getString('presentation_org_logo'); // Fetch logo from SharedPreferences
+    String? orgName = prefs.getString('org_name');
+    String? orgIdString = prefs.getString('current_org'); // Retrieve current_org
+    String? orgLogo = prefs.getString('presentation_org_logo');
 
-    if (orgName == null) {
-      await prefs.setString('orgName', 'World');
+    print('FeedOutsidePage _loadOrgData: org_name: $orgName, orgIdString: $orgIdString, orgLogo: $orgLogo');
+
+    // Set default orgName if null or empty
+    if (orgName == null || orgName.isEmpty) {
+      await prefs.setString('org_name', 'World');
       orgName = 'World';
     }
+
+    // Parse orgId from current_org, default to 1 if invalid or null
     int orgId = int.tryParse(orgIdString ?? '1') ?? 1;
 
     if (mounted) {
       setState(() {
         _orgName = orgName ?? 'World';
-        _orgId = orgId;
-        _orgLogoUrl = orgLogo ?? 'assets/mobilizer_logo.jpg'; // Fallback to asset if no logo in SharedPreferences
+        _orgId = orgId; // Assign parsed orgId to _orgId
+        _orgLogoUrl = orgLogo ?? 'assets/mobilizer_logo.jpg';
       });
     }
   }
@@ -372,6 +388,7 @@ class _FeedOutsidePageState extends State<FeedOutsidePage> {
     }
   }
 
+  // Updated _fetchTownhallList in _FeedOutsidePageState
   Future<void> _fetchTownhallList() async {
     try {
       final townhallService = TownhallService();
@@ -382,13 +399,11 @@ class _FeedOutsidePageState extends State<FeedOutsidePage> {
       final List<Townhall> townhalls = result['townhalls'];
       final String? tag = result['tag'];
 
-      // Handle special tags
       if (tag == "no_permission") {
         final prefs = await SharedPreferences.getInstance();
-        final currentOrgId = prefs.getString('orgID');
-        final currentOrgName = prefs.getString('orgName');
+        final currentOrgId = prefs.getString('current_org'); // Changed from 'orgID'
+        final currentOrgName = prefs.getString('org_name'); // Changed from 'orgName'
 
-        // Show the no permission dialog
         await showDialog(
           context: context,
           builder: (BuildContext context) {
@@ -415,20 +430,20 @@ class _FeedOutsidePageState extends State<FeedOutsidePage> {
               actions: [
                 ElevatedButton(
                   style: ElevatedButton.styleFrom(
-                    backgroundColor: Colors.blue, // Blue background
-                    foregroundColor: Colors.white, // White text/icon color
+                    backgroundColor: Colors.blue,
+                    foregroundColor: Colors.white,
                     shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(8), // Rounded corners
+                      borderRadius: BorderRadius.circular(8),
                     ),
                     padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
                   ),
                   onPressed: () {
-                    Navigator.of(context).pop(); // Close the dialog
+                    Navigator.of(context).pop();
                   },
                   child: const Text(
                     'Ok',
                     style: TextStyle(
-                      color: Colors.white, // White text
+                      color: Colors.white,
                       fontWeight: FontWeight.bold,
                     ),
                   ),
@@ -438,38 +453,28 @@ class _FeedOutsidePageState extends State<FeedOutsidePage> {
           },
         );
 
-        // Proceed with resetting to default organization
         if (currentOrgId == '1' && currentOrgName == 'World') {
           setState(() {
-            _orgId = 1;
+            _orgId = 182;
             _orgName = 'World';
             _isTownhallLoading = true;
             _posts.clear();
             _currentPage = 1;
             _hasMorePosts = true;
           });
-          await _fetchTownhallList(); // Recursive call to reload
+          await _fetchTownhallList();
           return;
         }
       } else if (tag == "update_townhalls") {
-        // Redirect to UpdateMyTownhall page
-        Navigator.push(
+        Navigator.pushReplacement(
           context,
           MaterialPageRoute(
-            builder: (context) => UpdateMyTownhall(
-              orgID: result['orgId'].toString(),
-              hasUpdated: (bool updated) {
-                if (updated) {
-                  _fetchTownhallList(); // Refresh townhall list after update
-                }
-              },
-            ),
+            builder: (context) => OnboardingWorldTownhalls(),
           ),
         );
-        return; // Exit after redirection
+        return;
       }
 
-      // Normal case: update townhall list
       setState(() {
         _townhalls = townhalls;
         _isTownhallLoading = false;
@@ -479,9 +484,7 @@ class _FeedOutsidePageState extends State<FeedOutsidePage> {
         ).townhallId;
       });
 
-      // Clear unreadMessages for the default selected townhall
       _updateTownhallUnread(_selectedTownhallId!, clearMessages: true);
-
       _fetchPosts(page: 1);
     } catch (e) {
       print('FeedOutsidePage: Error fetching townhall list: $e');
@@ -797,13 +800,15 @@ class _FeedOutsidePageState extends State<FeedOutsidePage> {
                       padding: const EdgeInsets.all(10.0),
                       child: CircleAvatar(
                         radius: 12.5, // Adjust size to match the previous 25x25 image
-                        backgroundImage: _orgLogoUrl!.startsWith('http')
-                            ? NetworkImage(_orgLogoUrl!) // Use network image if URL is from SharedPreferences
-                            : AssetImage(_orgLogoUrl!) as ImageProvider, // Use asset image for fallback
+                        backgroundImage: _orgLogoUrl != null && _orgLogoUrl!.isNotEmpty
+                            ? (_orgLogoUrl!.startsWith('http')
+                                ? NetworkImage(_orgLogoUrl!)
+                                : AssetImage(_orgLogoUrl!)) as ImageProvider
+                            : AssetImage('assets/mobilizer_logo.jpg') as ImageProvider, // Fallback if null or empty
                         onBackgroundImageError: (error, stackTrace) {
                           print('Error loading logo: $error');
                         },
-                        child: _orgLogoUrl == null
+                        child: _orgLogoUrl == null || _orgLogoUrl!.isEmpty
                             ? Icon(
                                 Icons.image,
                                 color: Provider.of<ThemeProvider>(context).isDarkMode
@@ -814,62 +819,48 @@ class _FeedOutsidePageState extends State<FeedOutsidePage> {
                       ),
                     ),
                     actions: [
-                      Padding(
-                        padding: const EdgeInsets.only(right: 16.0),
-                        child: GestureDetector(
-                          onTap: () {
-                            Navigator.push(
-                              context,
-                              PageRouteBuilder(
-                                pageBuilder: (context, animation, secondaryAnimation) =>
-                                    OrganizationScreen(),
-                                transitionsBuilder:
-                                    (context, animation, secondaryAnimation, child) {
-                                  const begin = Offset(-1.0, 0.0);
-                                  const end = Offset.zero;
-                                  const curve = Curves.easeInOut;
-
-                                  var tween = Tween(begin: begin, end: end)
-                                      .chain(CurveTween(curve: curve));
-                                  var offsetAnimation = animation.drive(tween);
-
-                                  return SlideTransition(
-                                    position: offsetAnimation,
-                                    child: child,
-                                  );
-                                },
-                                transitionDuration: const Duration(milliseconds: 300),
-                              ),
-                            );
-                          },
-                          child: Container(
-                            padding: const EdgeInsets.symmetric(vertical: 4, horizontal: 8),
-                            decoration: BoxDecoration(
-                              border: Border.all(color: Colors.blue),
-                              borderRadius: BorderRadius.circular(8),
+                    Padding(
+                      padding: const EdgeInsets.only(right: 16.0),
+                      child: GestureDetector(
+                        onTap: () {
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                              builder: (context) => OrganizationScreen(), // Navigate to Organizations screen
                             ),
-                            child: Row(
-                              children: [
-                                Text(
-                                  _orgName.length > 10
-                                      ? '${_orgName.substring(0, 10)}...'
-                                      : _orgName,
-                                  style: const TextStyle(
-                                    color: Colors.blue,
-                                    fontSize: 16,
-                                  ),
-                                ),
-                                const Icon(
-                                  Icons.arrow_drop_down,
+                          );
+                        },
+                        child: Container(
+                          padding: const EdgeInsets.symmetric(vertical: 4, horizontal: 8),
+                          decoration: BoxDecoration(
+                            border: Border.all(color: Colors.blue),
+                            borderRadius: BorderRadius.circular(8),
+                          ),
+                          child: Row(
+                            children: [
+                              Text(
+                                _orgName.length > 10
+                                    ? '${_orgName.substring(0, 10)}...'
+                                    : _orgName,
+                                style: const TextStyle(
                                   color: Colors.blue,
-                                  size: 20,
+                                  fontSize: 16,
                                 ),
-                              ],
-                            ),
+                              ),
+                              const SizedBox(width: 4),
+                              const Icon(
+                                Icons.arrow_drop_down,
+                                color: Colors.blue,
+                                size: 20,
+                              )
+
+                            ],
                           ),
                         ),
                       ),
-                    ],
+                    ),
+                  ],
+
                   ),
                 ),
               ),

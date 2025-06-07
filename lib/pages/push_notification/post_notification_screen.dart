@@ -1108,84 +1108,84 @@ class _PostNotificationScreenState extends State<PostNotificationScreen> {
                                                             "adj ${adjustedDurationInSeconds}");
                                                       }
 
-                                                      final result =
-                                                          await Navigator.of(
-                                                                  context)
-                                                              .push(
-                                                        MaterialPageRoute(
-                                                            builder: (context) {
-                                                          return TrimmerView(
-                                                              // start: 0.0,
-                                                              startPos:
-                                                                  images[index]
-                                                                      .startPos,
-                                                              endPos:
-                                                                  images[index]
-                                                                      .endPos,
-                                                              file:
-                                                                  images[index]
-                                                                      .file,
-                                                              duration:
-                                                                  adjustedDurationInSeconds);
-                                                        }),
-                                                      );
-                                                      if (result != null) {
-                                                        if (_mediaErrors
-                                                            .contains(index)) {
-                                                          print("Am here F");
-                                                          // Remove the element from the list
-                                                          setState(() {
-                                                            _mediaErrors
-                                                                .remove(index);
-                                                            _mediaHasError =
-                                                                false;
-                                                          });
-                                                        }
-                                                        int positionIndex = editedMediaList
-                                                            .indexWhere((media) =>
-                                                                media.indexID
-                                                                    .toString() ==
-                                                                index
-                                                                    .toString());
-                                                        if (positionIndex !=
-                                                            -1) {
-                                                          editedMediaList[
-                                                                      positionIndex]
-                                                                  .fileSize =
-                                                              await _getSize(
-                                                                  File(result[
-                                                                      'editedFile']));
+                                                      // final result =
+                                                      //     await Navigator.of(
+                                                      //             context)
+                                                      //         .push(
+                                                      //   MaterialPageRoute(
+                                                      //       builder: (context) {
+                                                      //     return TrimmerView(
+                                                      //         // start: 0.0,
+                                                      //         startPos:
+                                                      //             images[index]
+                                                      //                 .startPos,
+                                                      //         endPos:
+                                                      //             images[index]
+                                                      //                 .endPos,
+                                                      //         file:
+                                                      //             images[index]
+                                                      //                 .file,
+                                                      //         duration:
+                                                      //             adjustedDurationInSeconds);
+                                                      //   }),
+                                                      // );
+                                                      // if (result != null) {
+                                                      //   if (_mediaErrors
+                                                      //       .contains(index)) {
+                                                      //     print("Am here F");
+                                                      //     // Remove the element from the list
+                                                      //     setState(() {
+                                                      //       _mediaErrors
+                                                      //           .remove(index);
+                                                      //       _mediaHasError =
+                                                      //           false;
+                                                      //     });
+                                                      //   }
+                                                      //   int positionIndex = editedMediaList
+                                                      //       .indexWhere((media) =>
+                                                      //           media.indexID
+                                                      //               .toString() ==
+                                                      //           index
+                                                      //               .toString());
+                                                      //   if (positionIndex !=
+                                                      //       -1) {
+                                                      //     editedMediaList[
+                                                      //                 positionIndex]
+                                                      //             .fileSize =
+                                                      //         await _getSize(
+                                                      //             File(result[
+                                                      //                 'editedFile']));
 
-                                                          editedMediaList[
-                                                                      positionIndex]
-                                                                  .file =
-                                                              File(result[
-                                                                  'editedFile']);
-                                                          editedMediaList[
-                                                                  positionIndex]
-                                                              .wasEdited = true;
-                                                          editedMediaList[
-                                                                      positionIndex]
-                                                                  .startPos =
-                                                              result[
-                                                                  'startValue'];
-                                                          editedMediaList[
-                                                                      positionIndex]
-                                                                  .endPos =
-                                                              result[
-                                                                  'endValue'];
-                                                          editedMediaList[
-                                                                      positionIndex]
-                                                                  .type =
-                                                              MediaType.video;
-                                                          setState(() {});
-                                                          debugPrint("Fi2: " +
-                                                              editedMediaList[
-                                                                      positionIndex]
-                                                                  .fileSize
-                                                                  .toString());
-                                                        }
-                                                      }
+                                                      //     editedMediaList[
+                                                      //                 positionIndex]
+                                                      //             .file =
+                                                      //         File(result[
+                                                      //             'editedFile']);
+                                                      //     editedMediaList[
+                                                      //             positionIndex]
+                                                      //         .wasEdited = true;
+                                                      //     editedMediaList[
+                                                      //                 positionIndex]
+                                                      //             .startPos =
+                                                      //         result[
+                                                      //             'startValue'];
+                                                      //     editedMediaList[
+                                                      //                 positionIndex]
+                                                      //             .endPos =
+                                                      //         result[
+                                                      //             'endValue'];
+                                                      //     editedMediaList[
+                                                      //                 positionIndex]
+                                                      //             .type =
+                                                      //         MediaType.video;
+                                                      //     setState(() {});
+                                                      //     debugPrint("Fi2: " +
+                                                      //         editedMediaList[
+                                                      //                 positionIndex]
+                                                      //             .fileSize
+                                                      //             .toString());
+                                                      //   }
+                                                      // }
                                                     },
                                                   ),
                                                 ),

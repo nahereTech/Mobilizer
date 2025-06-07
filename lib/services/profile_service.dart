@@ -57,10 +57,10 @@ class ProfileService {
       if (response.statusCode == 200) {
         final Map<String, dynamic> responseData = json.decode(response.body);
         // If the status is not true, return false
-        if(responseData['status'] == true){
+        if (responseData['status'] == true) {
           print('valid login token');
           return true;
-        }else{
+        } else {
           print('invalid login token');
           return false;
         }
@@ -71,57 +71,16 @@ class ProfileService {
       }
     } catch (e) {
       print('Token validation error: $e');
-      return false;  // If any error occurs, return false
+      return false; // If any error occurs, return false
     }
   }
 
-
-
-  // Function to check profile completion status
-  // Future<bool> checkProfileCompletion(BuildContext context) async {
-  //   try {
-  //     final SharedPreferences prefs = await SharedPreferences.getInstance();
-  //     final String? loginToken = prefs.getString('token');
-
-  //     if (loginToken == null) {
-  //       throw Exception('No authentication token found');
-  //     }
-
-  //     final String apiUrl = '${base_url}profile/is_profile_complete';
-
-  //     final response = await http.get(
-  //       Uri.parse(apiUrl),
-  //       headers: {
-  //         'Authorization': loginToken,
-  //         'Apitoken': apiUrl,
-  //         'Content-Type': 'application/json',
-  //       },
-  //     ).timeout(
-  //       const Duration(seconds: 30),
-  //       onTimeout: () {
-  //         throw TimeoutException('Connection timeout');
-  //       },
-  //     );
-
-  //     if (response.statusCode == 200) {
-  //       final Map<String, dynamic> responseData = json.decode(response.body);
-  //       _isProfileComplete = responseData['status'] ?? false;
-  //       return _isProfileComplete;
-  //     } else {
-  //       throw HttpException('HTTP ${response.statusCode}: ${response.body}');
-  //     }
-  //   } catch (e) {
-  //     print('Profile check error: $e');
-  //     return false;
-  //   }
-  // }
-
   // Function to check if user has been onboarded
   Future<bool> checkUserOnboarding(BuildContext context, {String? deviceToken}) async {
-
     try {
       final SharedPreferences prefs = await SharedPreferences.getInstance();
       final String? loginToken = prefs.getString('token');
+      final String? currentOrg = prefs.getString('current_org');
 
       if (loginToken == null) {
         // No token found, clear shared preferences and redirect to LoginScreen
@@ -139,9 +98,18 @@ class ProfileService {
         return false;
       }
 
-      // Construct the API URL with query parameter for device_token if provided
+      // Construct the API URL with query parameters for device_token and current_org if provided
       final String baseApiUrl = '${base_url}townhall/is_user_onboarded';
-      final String apiUrl = deviceToken != null ? '$baseApiUrl?device_token=$deviceToken' : baseApiUrl;
+      final Map<String, String> queryParams = {};
+      if (deviceToken != null) {
+        queryParams['device_token'] = deviceToken;
+      }
+      if (currentOrg != null) {
+        queryParams['current_org'] = "182"; //currentOrg;
+      }
+      final String apiUrl = queryParams.isEmpty
+          ? baseApiUrl
+          : '$baseApiUrl?${queryParams.entries.map((e) => '${e.key}=${Uri.encodeQueryComponent(e.value)}').join('&')}';
 
       final response = await http.get(
         Uri.parse(apiUrl),
@@ -161,10 +129,13 @@ class ProfileService {
 
         // Check the response status and tag
         if (responseData['status'] == true && responseData['tag'] == 'onboarded') {
+          print("it is true");
           _isUserOnboarded = true;
           return true;
         } else {
           _isUserOnboarded = false;
+
+          print("it is not true");
 
           // Handle different failure cases and redirect accordingly
           switch (responseData['tag']) {
@@ -206,14 +177,12 @@ class ProfileService {
               });
               break;
 
-
             case 'not_following_org':
-              // Redirect to Profile screen
+              // Redirect to OnboardingWorldTownhalls screen
               WidgetsBinding.instance.addPostFrameCallback((_) {
                 Navigator.pushAndRemoveUntil(
                   context,
-                  // MaterialPageRoute(builder: (context) => OnboardingWorldTownhalls()),
-                  MaterialPageRoute(builder: (context) => OnboardingJoinOrg()),
+                  MaterialPageRoute(builder: (context) => OnboardingWorldTownhalls()),
                   (Route<dynamic> route) => false,
                 );
               });
@@ -232,7 +201,6 @@ class ProfileService {
       _showErrorDialog(context, 'Failed to check onboarding status: $e');
       return false;
     }
-
   }
 
   // Handle error dialog display

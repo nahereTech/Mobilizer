@@ -45,6 +45,77 @@ class _RegisterOtpScreenState extends State<RegisterOtpScreen> {
     });
   }
 
+  // Future<void> _verifyOtp(String email, String code) async {
+  //   setState(() {
+  //     loading = true;
+  //   });
+
+  //   try {
+  //     final response = await http.post(
+  //       Uri.parse('${base_url}user/confirm_email_then_log_user_in'),
+  //       headers: {
+  //         'Content-Type': 'application/json',
+  //       },
+  //       body: jsonEncode({
+  //         'email': email,
+  //         'code': code,
+  //       }),
+  //     );
+
+  //     final responseData = jsonDecode(response.body);
+
+  //     if (responseData['status'] == true) {
+  //       final String? newToken = responseData['data']['token'];
+
+  //       // Get existing token using the required `key` parameter
+  //       final String? existingToken = await AppSharedPreferences.getValue(key: 'token');
+
+  //       // Hold on to whichever token is available
+  //       final String tempToken = existingToken ?? newToken ?? '';
+
+  //       // Directly use SharedPreferences to clear all
+  //       final prefs = await SharedPreferences.getInstance();
+  //       await prefs.clear();
+
+  //       // Restore token if it exists
+  //       if (tempToken.isNotEmpty) {
+  //         await prefs.setString('token', tempToken);
+  //       }
+
+  //       // Store profile picture using your wrapper method
+  //       await AppSharedPreferences.setValue(
+  //         key: 'profilePic',
+  //         value: responseData['data']['photo_path'] ??
+  //             'https://imagedelivery.net/BgK_7WpdFl6ls9CBX3q89Q/90b1661f-f2a7-47eb-414f-c7e79ceacd00/mid',
+  //       );
+
+  //       // Navigate to profile onboarding
+  //       Navigator.pushAndRemoveUntil(
+  //         context,
+  //         MaterialPageRoute(builder: (context) => Profile()),
+  //         (Route<dynamic> route) => false,
+  //       );
+  //     } else {
+  //       final snackBar = SnackBar(
+  //         content: Text(responseData['msg'] ?? 'An error occurred'),
+  //         backgroundColor: Colors.red,
+  //       );
+  //       ScaffoldMessenger.of(context).showSnackBar(snackBar);
+  //     }
+  //   } catch (e) {
+  //     final snackBar = SnackBar(
+  //       content: Text('Error: $e'),
+  //       backgroundColor: Colors.red,
+  //     );
+  //     ScaffoldMessenger.of(context).showSnackBar(snackBar);
+  //   } finally {
+  //     setState(() {
+  //       loading = false;
+  //     });
+  //   }
+  // }
+
+
   Future<void> _verifyOtp(String email, String code) async {
     setState(() {
       loading = true;
@@ -65,21 +136,11 @@ class _RegisterOtpScreenState extends State<RegisterOtpScreen> {
       final responseData = jsonDecode(response.body);
 
       if (responseData['status'] == true) {
+        // Store the new token if provided
         final String? newToken = responseData['data']['token'];
-
-        // Get existing token using the required `key` parameter
-        final String? existingToken = await AppSharedPreferences.getValue(key: 'token');
-
-        // Hold on to whichever token is available
-        final String tempToken = existingToken ?? newToken ?? '';
-
-        // Directly use SharedPreferences to clear all
-        final prefs = await SharedPreferences.getInstance();
-        await prefs.clear();
-
-        // Restore token if it exists
-        if (tempToken.isNotEmpty) {
-          await prefs.setString('token', tempToken);
+        if (newToken != null && newToken.isNotEmpty) {
+          await AppSharedPreferences.setValue(key: 'token', value: newToken);
+          print("Stored token: $newToken"); // Debug log
         }
 
         // Store profile picture using your wrapper method
@@ -88,6 +149,10 @@ class _RegisterOtpScreenState extends State<RegisterOtpScreen> {
           value: responseData['data']['photo_path'] ??
               'https://imagedelivery.net/BgK_7WpdFl6ls9CBX3q89Q/90b1661f-f2a7-47eb-414f-c7e79ceacd00/mid',
         );
+
+        // Debug: Log current_org to verify it’s preserved
+        final currentOrg = await AppSharedPreferences.getValue(key: 'current_org');
+        print("Current org after OTP verification: $currentOrg");
 
         // Navigate to profile onboarding
         Navigator.pushAndRemoveUntil(

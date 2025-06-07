@@ -11,21 +11,20 @@ import 'package:mobilizer/common/common/theme_provider.dart';
 import 'package:intl/intl.dart';
 import 'package:mobilizer/common/common/constants.dart';
 import 'package:mobilizer/common/common/sharepreference.dart';
-import 'package:mobilizer/widget/edit_video.dart';
 import 'package:video_player/video_player.dart';
 
 class CreatePost extends StatefulWidget {
   final int orgId;
   final int townhallId;
   final Map<String, dynamic> mapData;
-  final String townhallName; // Add this
+  final String townhallName;
 
   CreatePost({
     Key? key,
     required this.orgId,
     required this.townhallId,
     required this.mapData,
-    required this.townhallName, // Add this
+    required this.townhallName,
   }) : super(key: key);
 
   @override
@@ -37,7 +36,7 @@ class _CreatePostState extends State<CreatePost> {
   final _controllerOption1 = TextEditingController();
   final _controllerOption2 = TextEditingController();
   final _controllerOption3 = TextEditingController();
-  final _controllerOption4 = TextEditingController(); // New controller for 4th option
+  final _controllerOption4 = TextEditingController();
   final ImagePicker _picker = ImagePicker();
 
   bool _postAsNoticeboard = false;
@@ -68,7 +67,6 @@ class _CreatePostState extends State<CreatePost> {
   List<int> minutes = List.generate(59, (index) => index + 1);
   FocusNode _focusNode = FocusNode();
 
-
   @override
   void initState() {
     _setProfilePic();
@@ -85,7 +83,7 @@ class _CreatePostState extends State<CreatePost> {
     _controllerOption1.dispose();
     _controllerOption2.dispose();
     _controllerOption3.dispose();
-    _controllerOption4.dispose(); // Dispose the new controller
+    _controllerOption4.dispose();
     super.dispose();
   }
 
@@ -121,15 +119,15 @@ class _CreatePostState extends State<CreatePost> {
                       onPressed: () {},
                       style: ButtonStyle(
                         backgroundColor: MaterialStateProperty.all<Color>(
-                          Colors.transparent, // Transparent background
+                          Colors.transparent,
                         ),
                         shape: MaterialStateProperty.all<OutlinedBorder>(
                           RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(12.0), // Same radius as second container
+                            borderRadius: BorderRadius.circular(12.0),
                             side: BorderSide(
                               color: Theme.of(context).brightness == Brightness.dark
-                                  ? Colors.grey[400]! // Dark mode border
-                                  : Colors.blue,      // Light mode border
+                                  ? Colors.grey[400]!
+                                  : Colors.blue,
                               width: 2.0,
                             ),
                           ),
@@ -139,24 +137,24 @@ class _CreatePostState extends State<CreatePost> {
                         ),
                       ),
                       child: Text(
-                        _substring(orgName ?? '', 15), // Limit to 15 chars with ellipsis
+                        _substring(orgName ?? '', 15),
                         style: TextStyle(
                           color: Theme.of(context).brightness == Brightness.dark
-                              ? Colors.white // Dark mode text
-                              : Colors.blue, // Light mode text
+                              ? Colors.white
+                              : Colors.blue,
                         ),
                       ),
                     ),
                   ),
-                  const SizedBox(width: 5), // Reduced spacing for arrow
+                  const SizedBox(width: 5),
                   Icon(
-                    Icons.arrow_forward, // Connecting arrow
+                    Icons.arrow_forward,
                     size: 18.0,
                     color: Theme.of(context).brightness == Brightness.dark
-                        ? Colors.grey[400] // Dark mode arrow
-                        : Colors.blue,    // Light mode arrow
+                        ? Colors.grey[400]
+                        : Colors.blue,
                   ),
-                  const SizedBox(width: 5), // Spacing after arrow
+                  const SizedBox(width: 5),
                   Padding(
                     padding: const EdgeInsets.only(right: 15.0),
                     child: Container(
@@ -169,10 +167,10 @@ class _CreatePostState extends State<CreatePost> {
                               : Colors.blue,
                           width: 2.0,
                         ),
-                        borderRadius: BorderRadius.circular(12.0), // Same radius
+                        borderRadius: BorderRadius.circular(12.0),
                       ),
                       child: Text(
-                        _substring(widget.townhallName, 15), // Limit to 15 chars with ellipsis
+                        _substring(widget.townhallName, 15),
                         style: TextStyle(
                           color: Theme.of(context).brightness == Brightness.dark
                               ? Colors.white
@@ -194,50 +192,14 @@ class _CreatePostState extends State<CreatePost> {
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    Row(
-                      children: [
-                        Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            // Text(
-                            //   'You are posting into the:',
-                            //   style: TextStyle(
-                            //     fontSize: 15.0,
-                            //     color: Colors.grey,
-                            //   ),
-                            // ),
-                            // Row(
-                            //   children: [
-                            //     Text(
-                            //       '$_groupName',
-                            //       style: TextStyle(
-                            //         fontSize: 16.0,
-                            //         color: Colors.black,
-                            //         fontWeight: FontWeight.bold,
-                            //       ),
-                            //     ),
-                            //     SizedBox(width: 5),
-                            //     Text(
-                            //       'townhall',
-                            //       style: TextStyle(
-                            //         fontSize: 16.0,
-                            //         color: Colors.black,
-                            //       ),
-                            //     ),
-                            //   ],
-                            // ),
-                          ],
-                        ),
-                      ],
-                    ),
                     const SizedBox(height: 20.0),
                     Theme(
                       data: Theme.of(context).copyWith(
                         inputDecorationTheme: InputDecorationTheme(
                           filled: true,
-                          fillColor: Theme.of(context).brightness == Brightness.dark 
-                              ? Color(0xFF303030) // Dark mode background
-                              : Colors.white,     // Light mode background
+                          fillColor: Theme.of(context).brightness == Brightness.dark
+                              ? Color(0xFF303030)
+                              : Colors.white,
                         ),
                       ),
                       child: TextField(
@@ -245,26 +207,26 @@ class _CreatePostState extends State<CreatePost> {
                         focusNode: _focusNode,
                         controller: _postController,
                         style: TextStyle(
-                          color: Theme.of(context).brightness == Brightness.dark 
-                              ? Colors.white 
+                          color: Theme.of(context).brightness == Brightness.dark
+                              ? Colors.white
                               : Colors.black,
                         ),
                         decoration: InputDecoration(
                           hintText: "What's happening?",
                           hintStyle: TextStyle(
-                            color: Theme.of(context).brightness == Brightness.dark 
-                                ? Colors.grey[300] 
+                            color: Theme.of(context).brightness == Brightness.dark
+                                ? Colors.grey[300]
                                 : Colors.grey[700],
                           ),
                           counterStyle: TextStyle(
-                            color: Theme.of(context).brightness == Brightness.dark 
-                                ? Colors.grey[400] 
+                            color: Theme.of(context).brightness == Brightness.dark
+                                ? Colors.grey[400]
                                 : Colors.grey[700],
                           ),
                           enabledBorder: OutlineInputBorder(
                             borderSide: BorderSide(
-                              color: Theme.of(context).brightness == Brightness.dark 
-                                  ? Colors.grey[600]! 
+                              color: Theme.of(context).brightness == Brightness.dark
+                                  ? Colors.grey[600]!
                                   : Colors.grey,
                             ),
                             borderRadius: BorderRadius.circular(5.0),
@@ -291,12 +253,10 @@ class _CreatePostState extends State<CreatePost> {
                                 onTap: () async {
                                   if (images.length >= 4) {
                                     final snackBar = SnackBar(
-                                      content: Text(
-                                          'You have reached the maximum allowed files'),
+                                      content: Text('You have reached the maximum allowed files'),
                                       backgroundColor: Colors.red,
                                     );
-                                    ScaffoldMessenger.of(context)
-                                        .showSnackBar(snackBar);
+                                    ScaffoldMessenger.of(context).showSnackBar(snackBar);
                                   } else {
                                     gallery();
                                   }
@@ -319,26 +279,10 @@ class _CreatePostState extends State<CreatePost> {
                                   size: 32,
                                   color: Colors.blue,
                                 ),
-                              )
-                              // canPostPoll
-                              //     ? GestureDetector(
-                              //         onTap: () {
-                              //           setState(() {
-                              //             _postAsPoll = true;
-                              //           });
-                              //         },
-                              //         child: Icon(
-                              //           Icons.poll_outlined,
-                              //           size: 32,
-                              //           color: Colors.blue,
-                              //         ),
-                              //       )
-                              //     : SizedBox(),
+                              ),
                             ],
                           ),
-                    _postAsPoll
-                        ? SizedBox()
-                        : SizedBox(height: images.length > 0 ? 20.0 : 0),
+                    _postAsPoll ? SizedBox() : SizedBox(height: images.length > 0 ? 20.0 : 0),
                     if (images.length > 0)
                       _postAsPoll
                           ? SizedBox()
@@ -349,11 +293,9 @@ class _CreatePostState extends State<CreatePost> {
                                 itemCount: images.length,
                                 itemBuilder: (context, index) {
                                   return Padding(
-                                    padding: const EdgeInsets.symmetric(
-                                        horizontal: 4.0),
+                                    padding: const EdgeInsets.symmetric(horizontal: 4.0),
                                     child: Column(
-                                      mainAxisAlignment:
-                                          MainAxisAlignment.center,
+                                      mainAxisAlignment: MainAxisAlignment.center,
                                       children: [
                                         Stack(
                                           children: [
@@ -362,20 +304,15 @@ class _CreatePostState extends State<CreatePost> {
                                               height: 120,
                                               decoration: BoxDecoration(
                                                 border: Border.all(
-                                                  color: _mediaHasError &&
-                                                          _mediaErrors
-                                                              .contains(index)
+                                                  color: _mediaHasError && _mediaErrors.contains(index)
                                                       ? Colors.red
                                                       : Colors.white,
                                                 ),
-                                                borderRadius:
-                                                    BorderRadius.circular(8.0),
+                                                borderRadius: BorderRadius.circular(8.0),
                                               ),
                                               child: ClipRRect(
-                                                  borderRadius:
-                                                      BorderRadius.circular(8.0),
-                                                  child: _buildMediaPreview(
-                                                      images[index])),
+                                                  borderRadius: BorderRadius.circular(8.0),
+                                                  child: _buildMediaPreview(images[index])),
                                             ),
                                             Positioned(
                                               top: 0,
@@ -385,180 +322,39 @@ class _CreatePostState extends State<CreatePost> {
                                                 icon: Icon(Icons.cancel),
                                                 onPressed: () {
                                                   setState(() {
-                                                    int posIndex = _mediaErrors
-                                                        .indexOf(index);
+                                                    int posIndex = _mediaErrors.indexOf(index);
                                                     if (posIndex != -1) {
                                                       _mediaHasError = false;
-                                                      _mediaErrors
-                                                          .removeAt(posIndex);
+                                                      _mediaErrors.removeAt(posIndex);
                                                     }
                                                     images.removeAt(index);
-                                                    editedMediaList
-                                                        .removeAt(index);
+                                                    editedMediaList.removeAt(index);
                                                   });
                                                 },
                                               ),
                                             ),
-                                            Positioned(
-                                              bottom: 15,
-                                              right: 10,
-                                              child: Container(
-                                                width: 21,
-                                                height: 21,
-                                                alignment: Alignment.center,
-                                                decoration: BoxDecoration(
-                                                  color: Colors.blue,
-                                                  borderRadius:
-                                                      BorderRadius.circular(
-                                                          50.0),
-                                                ),
-                                                child: IconButton(
-                                                  padding: EdgeInsets.only(
-                                                      top: 1, left: 2),
-                                                  iconSize: 17,
-                                                  icon: Icon(Icons.edit,
-                                                      color: Colors.white),
-                                                  onPressed: () async {
-                                                    if (images[index]
-                                                            .type
-                                                            .toString() ==
-                                                        "MediaType.video") {
-                                                      var adjustedDurationInSeconds =
-                                                          3.0;
-                                                      VideoPlayerController
-                                                          controller =
-                                                          VideoPlayerController
-                                                              .file(
-                                                                  images[index]
-                                                                      .file);
-                                                      await controller
-                                                          .initialize();
-                                                      int fileSizeInBytes =
-                                                          await images[index]
-                                                              .file
-                                                              .length();
-                                                      double fileSizeInMB =
-                                                          fileSizeInBytes /
-                                                              (1024 * 1024);
-                                                      print(
-                                                          "fileSize: ${fileSizeInMB}");
-
-                                                      if (fileSizeInMB > 15) {
-                                                        double
-                                                            originalVideoDurationInSeconds =
-                                                            controller
-                                                                .value
-                                                                .duration
-                                                                .inSeconds
-                                                                .toDouble();
-                                                        print(
-                                                            "Ori ${originalVideoDurationInSeconds}");
-
-                                                        double val = controller
-                                                                .value
-                                                                .duration
-                                                                .inSeconds /
-                                                            (fileSizeInMB /
-                                                                15.0);
-                                                        setState(() {
-                                                          adjustedDurationInSeconds =
-                                                              val;
-                                                        });
-                                                        print(
-                                                            "adj ${adjustedDurationInSeconds}");
-                                                      } else {
-                                                        setState(() {
-                                                          adjustedDurationInSeconds =
-                                                              controller
-                                                                  .value
-                                                                  .duration
-                                                                  .inSeconds
-                                                                  .toDouble();
-                                                        });
-                                                      }
-
-                                                      final result =
-                                                          await Navigator.of(
-                                                                  context)
-                                                              .push(
-                                                        MaterialPageRoute(
-                                                            builder: (context) {
-                                                          return TrimmerView(
-                                                              startPos: images[
-                                                                      index]
-                                                                  .startPos,
-                                                              endPos: images[
-                                                                      index]
-                                                                  .endPos,
-                                                              file: images[index]
-                                                                  .file,
-                                                              duration:
-                                                                  adjustedDurationInSeconds);
-                                                        }),
-                                                      );
-                                                      if (result != null) {
-                                                        if (_mediaErrors
-                                                            .contains(index)) {
-                                                          setState(() {
-                                                            _mediaErrors
-                                                                .remove(index);
-                                                            _mediaHasError =
-                                                                false;
-                                                          });
-                                                        }
-                                                        int positionIndex =
-                                                            editedMediaList
-                                                                .indexWhere((media) =>
-                                                                    media.indexID
-                                                                        .toString() ==
-                                                                    index
-                                                                        .toString());
-                                                        if (positionIndex !=
-                                                            -1) {
-                                                          editedMediaList[
-                                                                  positionIndex]
-                                                              .fileSize = await _getSize(
-                                                                  File(result[
-                                                                      'editedFile']));
-
-                                                          editedMediaList[
-                                                                  positionIndex]
-                                                              .file = File(
-                                                                  result[
-                                                                      'editedFile']);
-                                                          editedMediaList[
-                                                                  positionIndex]
-                                                              .wasEdited = true;
-                                                          editedMediaList[
-                                                                  positionIndex]
-                                                              .startPos = result[
-                                                                  'startValue'];
-                                                          editedMediaList[
-                                                                  positionIndex]
-                                                              .endPos = result[
-                                                                  'endValue'];
-                                                          editedMediaList[
-                                                                  positionIndex]
-                                                              .type =
-                                                              MediaType.video;
-                                                          setState(() {});
-                                                          debugPrint("Fi2: " +
-                                                              editedMediaList[
-                                                                      positionIndex]
-                                                                  .fileSize
-                                                                  .toString());
-                                                        }
-                                                      }
-                                                    } else {
-                                                      imageEditor(
-                                                          context,
-                                                          images[index].file,
-                                                          index);
-                                                    }
-                                                  },
+                                            if (images[index].type == MediaType.image)
+                                              Positioned(
+                                                bottom: 15,
+                                                right: 10,
+                                                child: Container(
+                                                  width: 21,
+                                                  height: 21,
+                                                  alignment: Alignment.center,
+                                                  decoration: BoxDecoration(
+                                                    color: Colors.blue,
+                                                    borderRadius: BorderRadius.circular(50.0),
+                                                  ),
+                                                  child: IconButton(
+                                                    padding: EdgeInsets.only(top: 1, left: 2),
+                                                    iconSize: 17,
+                                                    icon: Icon(Icons.edit, color: Colors.white),
+                                                    onPressed: () async {
+                                                      imageEditor(context, images[index].file, index);
+                                                    },
+                                                  ),
                                                 ),
                                               ),
-                                            ),
                                           ],
                                         ),
                                         SizedBox(height: 8),
@@ -570,250 +366,236 @@ class _CreatePostState extends State<CreatePost> {
                             ),
                     _postAsPoll ? SizedBox() : SizedBox(height: 20.0),
                     SizedBox(height: _postAsPoll ? 25 : 0),
-                    // Replace the existing poll option sections with this updated version
-                    
                     _postAsPoll
-                    ? Column(
-                        children: [
-                          // Option 1
-                          TextFormField(
-                            controller: _controllerOption1,
-                            maxLength: 30,
-                            style: TextStyle(
-                              color: Theme.of(context).colorScheme.onSurface, // Text color adapts to theme
-                            ),
-                            decoration: InputDecoration(
-                              labelText: 'Option 1',
-                              hintText: 'Option 1',
-                              filled: true,
-                              fillColor: Theme.of(context).colorScheme.surfaceVariant, // Background adapts to theme
-                              border: OutlineInputBorder(
-                                borderRadius: BorderRadius.circular(8.0),
-                                borderSide: BorderSide(
-                                  color: Theme.of(context).colorScheme.outline,
+                        ? Column(
+                            children: [
+                              TextFormField(
+                                controller: _controllerOption1,
+                                maxLength: 30,
+                                style: TextStyle(
+                                  color: Theme.of(context).colorScheme.onSurface,
                                 ),
-                              ),
-                              focusedBorder: OutlineInputBorder(
-                                borderRadius: BorderRadius.circular(8.0),
-                                borderSide: BorderSide(
-                                  color: Theme.of(context).colorScheme.primary,
-                                  width: 2.0,
-                                ),
-                              ),
-                              enabledBorder: OutlineInputBorder(
-                                borderRadius: BorderRadius.circular(8.0),
-                                borderSide: BorderSide(
-                                  color: Theme.of(context).colorScheme.outline,
-                                ),
-                              ),
-                              floatingLabelBehavior: FloatingLabelBehavior.never,
-                              counterText: '',
-                              hintStyle: TextStyle(
-                                color: Theme.of(context).colorScheme.onSurface.withOpacity(0.5),
-                              ),
-                              contentPadding: EdgeInsets.all(16.0),
-                            ),
-                            keyboardType: TextInputType.multiline,
-                            maxLines: null,
-                          ),
-                          SizedBox(height: 16),
-
-                          // Option 2
-                          TextFormField(
-                            controller: _controllerOption2,
-                            maxLength: 30,
-                            style: TextStyle(
-                              color: Theme.of(context).colorScheme.onSurface,
-                            ),
-                            decoration: InputDecoration(
-                              labelText: 'Option 2',
-                              hintText: 'Option 2',
-                              filled: true,
-                              fillColor: Theme.of(context).colorScheme.surfaceVariant,
-                              border: OutlineInputBorder(
-                                borderRadius: BorderRadius.circular(8.0),
-                                borderSide: BorderSide(
-                                  color: Theme.of(context).colorScheme.outline,
-                                ),
-                              ),
-                              focusedBorder: OutlineInputBorder(
-                                borderRadius: BorderRadius.circular(8.0),
-                                borderSide: BorderSide(
-                                  color: Theme.of(context).colorScheme.primary,
-                                  width: 2.0,
-                                ),
-                              ),
-                              enabledBorder: OutlineInputBorder(
-                                borderRadius: BorderRadius.circular(8.0),
-                                borderSide: BorderSide(
-                                  color: Theme.of(context).colorScheme.outline,
-                                ),
-                              ),
-                              floatingLabelBehavior: FloatingLabelBehavior.never,
-                              counterText: '',
-                              hintStyle: TextStyle(
-                                color: Theme.of(context).colorScheme.onSurface.withOpacity(0.5),
-                              ),
-                              contentPadding: EdgeInsets.all(16.0),
-                            ),
-                            keyboardType: TextInputType.multiline,
-                            maxLines: null,
-                          ),
-                          SizedBox(height: 16),
-
-                          // Option 3 (conditionally shown)
-                          _optCounts >= 3
-                              ? TextFormField(
-                                  controller: _controllerOption3,
-                                  maxLength: 30,
-                                  style: TextStyle(
-                                    color: Theme.of(context).colorScheme.onSurface,
+                                decoration: InputDecoration(
+                                  labelText: 'Option 1',
+                                  hintText: 'Option 1',
+                                  filled: true,
+                                  fillColor: Theme.of(context).colorScheme.surfaceVariant,
+                                  border: OutlineInputBorder(
+                                    borderRadius: BorderRadius.circular(8.0),
+                                    borderSide: BorderSide(
+                                      color: Theme.of(context).colorScheme.outline,
+                                    ),
                                   ),
-                                  decoration: InputDecoration(
-                                    labelText: 'Option 3',
-                                    hintText: 'Option 3',
-                                    filled: true,
-                                    fillColor: Theme.of(context).colorScheme.surfaceVariant,
-                                    border: OutlineInputBorder(
-                                      borderRadius: BorderRadius.circular(8.0),
-                                      borderSide: BorderSide(
-                                        color: Theme.of(context).colorScheme.outline,
-                                      ),
+                                  focusedBorder: OutlineInputBorder(
+                                    borderRadius: BorderRadius.circular(8.0),
+                                    borderSide: BorderSide(
+                                      color: Theme.of(context).colorScheme.primary,
+                                      width: 2.0,
                                     ),
-                                    focusedBorder: OutlineInputBorder(
-                                      borderRadius: BorderRadius.circular(8.0),
-                                      borderSide: BorderSide(
-                                        color: Theme.of(context).colorScheme.primary,
-                                        width: 2.0,
-                                      ),
+                                  ),
+                                  enabledBorder: OutlineInputBorder(
+                                    borderRadius: BorderRadius.circular(8.0),
+                                    borderSide: BorderSide(
+                                      color: Theme.of(context).colorScheme.outline,
                                     ),
-                                    enabledBorder: OutlineInputBorder(
-                                      borderRadius: BorderRadius.circular(8.0),
-                                      borderSide: BorderSide(
-                                        color: Theme.of(context).colorScheme.outline,
-                                      ),
+                                  ),
+                                  floatingLabelBehavior: FloatingLabelBehavior.never,
+                                  counterText: '',
+                                  hintStyle: TextStyle(
+                                    color: Theme.of(context).colorScheme.onSurface.withOpacity(0.5),
+                                  ),
+                                  contentPadding: EdgeInsets.all(16.0),
+                                ),
+                                keyboardType: TextInputType.multiline,
+                                maxLines: null,
+                              ),
+                              SizedBox(height: 16),
+                              TextFormField(
+                                controller: _controllerOption2,
+                                maxLength: 30,
+                                style: TextStyle(
+                                  color: Theme.of(context).colorScheme.onSurface,
+                                ),
+                                decoration: InputDecoration(
+                                  labelText: 'Option 2',
+                                  hintText: 'Option 2',
+                                  filled: true,
+                                  fillColor: Theme.of(context).colorScheme.surfaceVariant,
+                                  border: OutlineInputBorder(
+                                    borderRadius: BorderRadius.circular(8.0),
+                                    borderSide: BorderSide(
+                                      color: Theme.of(context).colorScheme.outline,
                                     ),
-                                    floatingLabelBehavior: FloatingLabelBehavior.never,
-                                    counterText: '',
-                                    hintStyle: TextStyle(
-                                      color: Theme.of(context).colorScheme.onSurface.withOpacity(0.5),
+                                  ),
+                                  focusedBorder: OutlineInputBorder(
+                                    borderRadius: BorderRadius.circular(8.0),
+                                    borderSide: BorderSide(
+                                      color: Theme.of(context).colorScheme.primary,
+                                      width: 2.0,
                                     ),
-                                    contentPadding: EdgeInsets.all(16.0),
-                                    suffixIcon: IconButton(
-                                      icon: Icon(Icons.close_rounded,
+                                  ),
+                                  enabledBorder: OutlineInputBorder(
+                                    borderRadius: BorderRadius.circular(8.0),
+                                    borderSide: BorderSide(
+                                      color: Theme.of(context).colorScheme.outline,
+                                    ),
+                                  ),
+                                  floatingLabelBehavior: FloatingLabelBehavior.never,
+                                  counterText: '',
+                                  hintStyle: TextStyle(
+                                    color: Theme.of(context).colorScheme.onSurface.withOpacity(0.5),
+                                  ),
+                                  contentPadding: EdgeInsets.all(16.0),
+                                ),
+                                keyboardType: TextInputType.multiline,
+                                maxLines: null,
+                              ),
+                              SizedBox(height: 16),
+                              _optCounts >= 3
+                                  ? TextFormField(
+                                      controller: _controllerOption3,
+                                      maxLength: 30,
+                                      style: TextStyle(
                                         color: Theme.of(context).colorScheme.onSurface,
                                       ),
+                                      decoration: InputDecoration(
+                                        labelText: 'Option 3',
+                                        hintText: 'Option 3',
+                                        filled: true,
+                                        fillColor: Theme.of(context).colorScheme.surfaceVariant,
+                                        border: OutlineInputBorder(
+                                          borderRadius: BorderRadius.circular(8.0),
+                                          borderSide: BorderSide(
+                                            color: Theme.of(context).colorScheme.outline,
+                                          ),
+                                        ),
+                                        focusedBorder: OutlineInputBorder(
+                                          borderRadius: BorderRadius.circular(8.0),
+                                          borderSide: BorderSide(
+                                            color: Theme.of(context).colorScheme.primary,
+                                            width: 2.0,
+                                          ),
+                                        ),
+                                        enabledBorder: OutlineInputBorder(
+                                          borderRadius: BorderRadius.circular(8.0),
+                                          borderSide: BorderSide(
+                                            color: Theme.of(context).colorScheme.outline,
+                                          ),
+                                        ),
+                                        floatingLabelBehavior: FloatingLabelBehavior.never,
+                                        counterText: '',
+                                        hintStyle: TextStyle(
+                                          color: Theme.of(context).colorScheme.onSurface.withOpacity(0.5),
+                                        ),
+                                        contentPadding: EdgeInsets.all(16.0),
+                                        suffixIcon: IconButton(
+                                          icon: Icon(Icons.close_rounded,
+                                              color: Theme.of(context).colorScheme.onSurface),
+                                          onPressed: () {
+                                            setState(() {
+                                              _optCounts = 2;
+                                              _controllerOption3.clear();
+                                            });
+                                          },
+                                        ),
+                                      ),
+                                      keyboardType: TextInputType.multiline,
+                                      maxLines: null,
+                                    )
+                                  : SizedBox(),
+                              SizedBox(height: _optCounts >= 3 ? 16 : 0),
+                              _optCounts >= 4
+                                  ? TextFormField(
+                                      controller: _controllerOption4,
+                                      maxLength: 30,
+                                      style: TextStyle(
+                                        color: Theme.of(context).colorScheme.onSurface,
+                                      ),
+                                      decoration: InputDecoration(
+                                        labelText: 'Option 4',
+                                        hintText: 'Option 4',
+                                        filled: true,
+                                        fillColor: Theme.of(context).colorScheme.surfaceVariant,
+                                        border: OutlineInputBorder(
+                                          borderRadius: BorderRadius.circular(8.0),
+                                          borderSide: BorderSide(
+                                            color: Theme.of(context).colorScheme.outline,
+                                          ),
+                                        ),
+                                        focusedBorder: OutlineInputBorder(
+                                          borderRadius: BorderRadius.circular(8.0),
+                                          borderSide: BorderSide(
+                                            color: Theme.of(context).colorScheme.primary,
+                                            width: 2.0,
+                                          ),
+                                        ),
+                                        enabledBorder: OutlineInputBorder(
+                                          borderRadius: BorderRadius.circular(8.0),
+                                          borderSide: BorderSide(
+                                            color: Theme.of(context).colorScheme.outline,
+                                          ),
+                                        ),
+                                        floatingLabelBehavior: FloatingLabelBehavior.never,
+                                        counterText: '',
+                                        hintStyle: TextStyle(
+                                          color: Theme.of(context).colorScheme.onSurface.withOpacity(0.5),
+                                        ),
+                                        contentPadding: EdgeInsets.all(16.0),
+                                        suffixIcon: Row(
+                                          mainAxisSize: MainAxisSize.min,
+                                          children: [
+                                            IconButton(
+                                              icon: Icon(Icons.close_rounded,
+                                                  color: Theme.of(context).colorScheme.onSurface),
+                                              onPressed: () {
+                                                setState(() {
+                                                  _optCounts = 3;
+                                                  _controllerOption4.clear();
+                                                });
+                                              },
+                                            ),
+                                            TextButton(
+                                              onPressed: () {
+                                                setState(() {
+                                                  _optCounts = 3;
+                                                  _controllerOption4.clear();
+                                                });
+                                              },
+                                              child: Text(
+                                                'Remove',
+                                                style: TextStyle(
+                                                  color: Theme.of(context).colorScheme.error,
+                                                ),
+                                              ),
+                                            ),
+                                          ],
+                                        ),
+                                      ),
+                                      keyboardType: TextInputType.multiline,
+                                      maxLines: null,
+                                    )
+                                  : SizedBox(),
+                              SizedBox(height: _optCounts >= 4 ? 16 : 0),
+                              _optCounts < 4
+                                  ? TextButton.icon(
                                       onPressed: () {
                                         setState(() {
-                                          _optCounts = 2;
-                                          _controllerOption3.clear();
+                                          _optCounts++;
                                         });
                                       },
-                                    ),
-                                  ),
-                                  keyboardType: TextInputType.multiline,
-                                  maxLines: null,
-                                )
-                              : SizedBox(),
-                          SizedBox(height: _optCounts >= 3 ? 16 : 0),
-
-                          // Option 4 (conditionally shown)
-                          _optCounts >= 4
-                              ? TextFormField(
-                                  controller: _controllerOption4,
-                                  maxLength: 30,
-                                  style: TextStyle(
-                                    color: Theme.of(context).colorScheme.onSurface,
-                                  ),
-                                  decoration: InputDecoration(
-                                    labelText: 'Option 4',
-                                    hintText: 'Option 4',
-                                    filled: true,
-                                    fillColor: Theme.of(context).colorScheme.surfaceVariant,
-                                    border: OutlineInputBorder(
-                                      borderRadius: BorderRadius.circular(8.0),
-                                      borderSide: BorderSide(
-                                        color: Theme.of(context).colorScheme.outline,
-                                      ),
-                                    ),
-                                    focusedBorder: OutlineInputBorder(
-                                      borderRadius: BorderRadius.circular(8.0),
-                                      borderSide: BorderSide(
-                                        color: Theme.of(context).colorScheme.primary,
-                                        width: 2.0,
-                                      ),
-                                    ),
-                                    enabledBorder: OutlineInputBorder(
-                                      borderRadius: BorderRadius.circular(8.0),
-                                      borderSide: BorderSide(
-                                        color: Theme.of(context).colorScheme.outline,
-                                      ),
-                                    ),
-                                    floatingLabelBehavior: FloatingLabelBehavior.never,
-                                    counterText: '',
-                                    hintStyle: TextStyle(
-                                      color: Theme.of(context).colorScheme.onSurface.withOpacity(0.5),
-                                    ),
-                                    contentPadding: EdgeInsets.all(16.0),
-                                    suffixIcon: Row(
-                                      mainAxisSize: MainAxisSize.min,
-                                      children: [
-                                        IconButton(
-                                          icon: Icon(Icons.close_rounded,
-                                            color: Theme.of(context).colorScheme.onSurface,
-                                          ),
-                                          onPressed: () {
-                                            setState(() {
-                                              _optCounts = 3;
-                                              _controllerOption4.clear();
-                                            });
-                                          },
+                                      icon: Icon(Icons.add_circle_outline,
+                                          color: Theme.of(context).colorScheme.primary),
+                                      label: Text(
+                                        'Add Option',
+                                        style: TextStyle(
+                                          color: Theme.of(context).colorScheme.primary,
                                         ),
-                                        TextButton(
-                                          onPressed: () {
-                                            setState(() {
-                                              _optCounts = 3;
-                                              _controllerOption4.clear();
-                                            });
-                                          },
-                                          child: Text(
-                                            'Remove',
-                                            style: TextStyle(
-                                              color: Theme.of(context).colorScheme.error,
-                                            ),
-                                          ),
-                                        ),
-                                      ],
-                                    ),
-                                  ),
-                                  keyboardType: TextInputType.multiline,
-                                  maxLines: null,
-                                )
-                              : SizedBox(),
-                          SizedBox(height: _optCounts >= 4 ? 16 : 0),
-
-                          // Add Option button (shown when less than 4 options)
-                          _optCounts < 4
-                              ? TextButton.icon(
-                                  onPressed: () {
-                                    setState(() {
-                                      _optCounts++;
-                                    });
-                                  },
-                                  icon: Icon(Icons.add_circle_outline,
-                                    color: Theme.of(context).colorScheme.primary,
-                                  ),
-                                  label: Text(
-                                    'Add Option',
-                                    style: TextStyle(
-                                      color: Theme.of(context).colorScheme.primary,
-                                    ),
-                                  ),
-                                )
-                              : SizedBox(),
-                        ],
-                      )
-                    : SizedBox(),
+                                      ),
+                                    )
+                                  : SizedBox(),
+                            ],
+                          )
+                        : SizedBox(),
                     SizedBox(height: _optCounts == 3 ? 25 : 0),
                     _postAsPoll
                         ? Row(
@@ -824,13 +606,11 @@ class _CreatePostState extends State<CreatePost> {
                                   decoration: InputDecoration(
                                     labelText: 'Days',
                                     enabledBorder: OutlineInputBorder(
-                                      borderSide:
-                                          BorderSide(color: Colors.black),
+                                      borderSide: BorderSide(color: Colors.black),
                                       borderRadius: BorderRadius.circular(5.0),
                                     ),
                                     focusedBorder: OutlineInputBorder(
-                                      borderSide:
-                                          const BorderSide(color: Colors.blue),
+                                      borderSide: const BorderSide(color: Colors.blue),
                                       borderRadius: BorderRadius.circular(5.0),
                                     ),
                                   ),
@@ -852,13 +632,11 @@ class _CreatePostState extends State<CreatePost> {
                                   decoration: InputDecoration(
                                     labelText: 'Hours',
                                     enabledBorder: OutlineInputBorder(
-                                      borderSide:
-                                          BorderSide(color: Colors.black),
+                                      borderSide: BorderSide(color: Colors.black),
                                       borderRadius: BorderRadius.circular(5.0),
                                     ),
                                     focusedBorder: OutlineInputBorder(
-                                      borderSide:
-                                          const BorderSide(color: Colors.blue),
+                                      borderSide: const BorderSide(color: Colors.blue),
                                       borderRadius: BorderRadius.circular(5.0),
                                     ),
                                   ),
@@ -880,13 +658,11 @@ class _CreatePostState extends State<CreatePost> {
                                   decoration: InputDecoration(
                                     labelText: 'Minutes',
                                     enabledBorder: OutlineInputBorder(
-                                      borderSide:
-                                          BorderSide(color: Colors.black),
+                                      borderSide: BorderSide(color: Colors.black),
                                       borderRadius: BorderRadius.circular(5.0),
                                     ),
                                     focusedBorder: OutlineInputBorder(
-                                      borderSide:
-                                          const BorderSide(color: Colors.blue),
+                                      borderSide: const BorderSide(color: Colors.blue),
                                       borderRadius: BorderRadius.circular(5.0),
                                     ),
                                   ),
@@ -954,179 +730,172 @@ class _CreatePostState extends State<CreatePost> {
                           Expanded(
                             child: ElevatedButton(
                               onPressed: _loading
-                                ? null
-                                : () async {
-                                    FocusScope.of(context).requestFocus(FocusNode());
-                                    print("Townhall: ${widget.townhallId}");
-                                    List<File> fileList = [];
+                                  ? null
+                                  : () async {
+                                      FocusScope.of(context).requestFocus(FocusNode());
+                                      print("Townhall: ${widget.townhallId}");
+                                      List<File> fileList = [];
 
-                                    if (_postController.text.trim().isEmpty) {
+                                      if (_postController.text.trim().isEmpty) {
+                                        final snackBar = SnackBar(
+                                          content: Text("Message can't be empty"),
+                                          backgroundColor: Colors.red,
+                                        );
+                                        ScaffoldMessenger.of(context).showSnackBar(snackBar);
+                                        return;
+                                      }
+
                                       final snackBar = SnackBar(
-                                        content: Text("Message can't be empty"),
-                                        backgroundColor: Colors.red,
+                                        content: Text(
+                                          'Please wait while your post uploads',
+                                          style: TextStyle(color: Colors.white),
+                                        ),
+                                        backgroundColor: Colors.amber[800],
                                       );
                                       ScaffoldMessenger.of(context).showSnackBar(snackBar);
-                                      return;
-                                    }
 
-                                    final snackBar = SnackBar(
-                                      content: Text(
-                                        'Please wait while your post uploads',
-                                        style: TextStyle(color: Colors.white),
-                                      ),
-                                      backgroundColor: Colors.amber[800],
-                                    );
-                                    ScaffoldMessenger.of(context).showSnackBar(snackBar);
-
-                                    if (editedMediaList.isNotEmpty) {
-                                      for (var i = 0; i < editedMediaList.length; i++) {
-                                        if (editedMediaList[i].fileSize > 15.0) {
-                                          setState(() {
-                                            _mediaHasError = true;
-                                            _mediaErrors.add(i);
-                                          });
+                                      if (editedMediaList.isNotEmpty) {
+                                        for (var i = 0; i < editedMediaList.length; i++) {
+                                          if (editedMediaList[i].fileSize > 15.0 &&
+                                              editedMediaList[i].type == MediaType.video) {
+                                            setState(() {
+                                              _mediaHasError = true;
+                                              _mediaErrors.add(i);
+                                            });
+                                          }
+                                          fileList.add(editedMediaList[i].file);
                                         }
-                                        fileList.add(editedMediaList[i].file);
                                       }
-                                    }
 
-                                    setState(() {
-                                      _loading = true;
-                                    });
+                                      setState(() {
+                                        _loading = true;
+                                      });
 
-                                    try {
-                                      if (_postAsPoll) {
-                                        // Poll posting logic
-                                        DateTime pollEnd = DateTime.now().add(
-                                          Duration(
-                                            days: _selectedDay,
-                                            hours: _selectedHour,
-                                            minutes: _selectedMinute,
-                                          ),
-                                        );
-
-                                        String option1 = _controllerOption1.text.trim();
-                                        String option2 = _controllerOption2.text.trim();
-                                        String option3 = _controllerOption3.text.trim();
-                                        String option4 = _controllerOption4.text.trim();
-
-                                        if (option1.isEmpty || option2.isEmpty) {
-                                          final snackBar = SnackBar(
-                                            content: Text('Options 1 and 2 cannot be blank'),
-                                            backgroundColor: Colors.red,
-                                          );
-                                          ScaffoldMessenger.of(context).showSnackBar(snackBar);
-                                          setState(() {
-                                            _loading = false;
-                                          });
-                                          return;
-                                        }
-
-                                        List<String> options = [option1, option2];
-                                        if (_optCounts >= 3 && option3.isNotEmpty) options.add(option3);
-                                        if (_optCounts >= 4 && option4.isNotEmpty) options.add(option4);
-
-                                        if (options.length != options.toSet().length) {
-                                          final snackBar = SnackBar(
-                                            content: Text('Poll options must be unique'),
-                                            backgroundColor: Colors.red,
-                                          );
-                                          ScaffoldMessenger.of(context).showSnackBar(snackBar);
-                                          setState(() {
-                                            _loading = false;
-                                          });
-                                          return;
-                                        }
-
-                                        // Prepare data for create_poll endpoint
-                                        final pollOptions = options;
-                                        final pollEndString = pollEnd.toIso8601String();
-
-                                        final response = await _createPoll(
-                                          userId: 'USER_ID_HERE', // Replace with actual user ID
-                                          message: _postController.text.trim(),
-                                          orgId: widget.orgId.toString(),
-                                          townhallId: widget.townhallId.toString(),
-                                          leadershipPost: _postAsNoticeboard ? 'yes' : 'no',
-                                          pollOptions: pollOptions,
-                                          pollEnd: pollEndString,
-                                        );
-
-                                        if (response['status'] == true) {
-                                          final snackBar = SnackBar(
-                                            content: Text('Poll posted successfully'),
-                                            backgroundColor: Colors.green.shade300,
-                                          );
-                                          ScaffoldMessenger.of(context).showSnackBar(snackBar);
-                                          Navigator.of(context).pop('refresh');
-                                        } else {
-                                          final snackBar = SnackBar(
-                                            content: Text(response['msg'] ?? 'Failed to post poll'),
-                                            backgroundColor: Colors.red,
-                                          );
-                                          ScaffoldMessenger.of(context).showSnackBar(snackBar);
-                                        }
-                                      } else {
-                                        // Normal post logic
-                                        if (_mediaHasError) {
-                                          final snackBar = SnackBar(
-                                            content: Text(
-                                                'Maximum allowed file size is 15MB. Please use the editor to resize your video'),
-                                            backgroundColor: Colors.red,
-                                          );
-                                          ScaffoldMessenger.of(context).showSnackBar(snackBar);
-                                        } else {
-                                          final response = await _createPost(
-                                            userId: 'USER_ID_HERE', // Replace with actual user ID
-                                            message: _postController.text.trim(),
-                                            group: widget.townhallId.toString(),
-                                            orgId: widget.orgId.toString(),
-                                            leadershipPost: _postAsNoticeboard ? 'yes' : 'no',
-                                            files: fileList,
+                                      try {
+                                        if (_postAsPoll) {
+                                          DateTime pollEnd = DateTime.now().add(
+                                            Duration(
+                                              days: _selectedDay,
+                                              hours: _selectedHour,
+                                              minutes: _selectedMinute,
+                                            ),
                                           );
 
-                                          if (response['status'] == 200) {
+                                          String option1 = _controllerOption1.text.trim();
+                                          String option2 = _controllerOption2.text.trim();
+                                          String option3 = _controllerOption3.text.trim();
+                                          String option4 = _controllerOption4.text.trim();
+
+                                          if (option1.isEmpty || option2.isEmpty) {
                                             final snackBar = SnackBar(
-                                              content: Text('Post created successfully'),
+                                              content: Text('Options 1 and 2 cannot be blank'),
+                                              backgroundColor: Colors.red,
+                                            );
+                                            ScaffoldMessenger.of(context).showSnackBar(snackBar);
+                                            setState(() {
+                                              _loading = false;
+                                            });
+                                            return;
+                                          }
+
+                                          List<String> options = [option1, option2];
+                                          if (_optCounts >= 3 && option3.isNotEmpty) options.add(option3);
+                                          if (_optCounts >= 4 && option4.isNotEmpty) options.add(option4);
+
+                                          if (options.length != options.toSet().length) {
+                                            final snackBar = SnackBar(
+                                              content: Text('Poll options must be unique'),
+                                              backgroundColor: Colors.red,
+                                            );
+                                            ScaffoldMessenger.of(context).showSnackBar(snackBar);
+                                            setState(() {
+                                              _loading = false;
+                                            });
+                                            return;
+                                          }
+
+                                          final pollOptions = options;
+                                          final pollEndString = pollEnd.toIso8601String();
+
+                                          final response = await _createPoll(
+                                            userId: 'USER_ID_HERE',
+                                            message: _postController.text.trim(),
+                                            orgId: widget.orgId.toString(),
+                                            townhallId: widget.townhallId.toString(),
+                                            leadershipPost: _postAsNoticeboard ? 'yes' : 'no',
+                                            pollOptions: pollOptions,
+                                            pollEnd: pollEndString,
+                                          );
+
+                                          if (response['status'] == true) {
+                                            final snackBar = SnackBar(
+                                              content: Text('Poll posted successfully'),
                                               backgroundColor: Colors.green.shade300,
                                             );
                                             ScaffoldMessenger.of(context).showSnackBar(snackBar);
                                             Navigator.of(context).pop('refresh');
                                           } else {
                                             final snackBar = SnackBar(
-                                              content: Text(response['msg'] ?? 'Failed to create post'),
+                                              content: Text(response['msg'] ?? 'Failed to post poll'),
                                               backgroundColor: Colors.red,
                                             );
                                             ScaffoldMessenger.of(context).showSnackBar(snackBar);
                                           }
+                                        } else {
+                                          if (_mediaHasError) {
+                                            final snackBar = SnackBar(
+                                              content: Text(
+                                                  'Maximum allowed file size is 15MB for videos.'),
+                                              backgroundColor: Colors.red,
+                                            );
+                                            ScaffoldMessenger.of(context).showSnackBar(snackBar);
+                                          } else {
+                                            final response = await _createPost(
+                                              userId: 'USER_ID_HERE',
+                                              message: _postController.text.trim(),
+                                              group: widget.townhallId.toString(),
+                                              orgId: widget.orgId.toString(),
+                                              leadershipPost: _postAsNoticeboard ? 'yes' : 'no',
+                                              files: fileList,
+                                            );
+
+                                            if (response['status'] == 200) {
+                                              final snackBar = SnackBar(
+                                                content: Text('Post created successfully'),
+                                                backgroundColor: Colors.green.shade300,
+                                              );
+                                              ScaffoldMessenger.of(context).showSnackBar(snackBar);
+                                              Navigator.of(context).pop('refresh');
+                                            } else {
+                                              final snackBar = SnackBar(
+                                                content: Text(response['msg'] ?? 'Failed to create post'),
+                                                backgroundColor: Colors.red,
+                                              );
+                                              ScaffoldMessenger.of(context).showSnackBar(snackBar);
+                                            }
+                                          }
                                         }
+                                      } catch (e) {
+                                        final snackBar = SnackBar(
+                                          content: Text('An error occurred: $e'),
+                                          backgroundColor: Colors.red,
+                                        );
+                                        ScaffoldMessenger.of(context).showSnackBar(snackBar);
+                                      } finally {
+                                        setState(() {
+                                          _loading = false;
+                                        });
                                       }
-                                    } catch (e) {
-                                      final snackBar = SnackBar(
-                                        content: Text('An error occurred: $e'),
-                                        backgroundColor: Colors.red,
-                                      );
-                                      ScaffoldMessenger.of(context).showSnackBar(snackBar);
-                                    } finally {
-                                      setState(() {
-                                        _loading = false;
-                                      });
-                                    }
-                                  },
+                                    },
                               style: ButtonStyle(
-                                backgroundColor:
-                                    MaterialStateProperty.all<Color>(
-                                        Colors.blue),
-                                shape: MaterialStateProperty.all<
-                                    RoundedRectangleBorder>(
+                                backgroundColor: MaterialStateProperty.all<Color>(Colors.blue),
+                                shape: MaterialStateProperty.all<RoundedRectangleBorder>(
                                   RoundedRectangleBorder(
                                     borderRadius: BorderRadius.circular(8.0),
                                   ),
                                 ),
-                                padding: MaterialStateProperty.all<
-                                    EdgeInsetsGeometry>(
-                                  EdgeInsets.symmetric(
-                                      vertical: 15.0, horizontal: 24.0),
+                                padding: MaterialStateProperty.all<EdgeInsetsGeometry>(
+                                  EdgeInsets.symmetric(vertical: 15.0, horizontal: 24.0),
                                 ),
                               ),
                               child: _loading
@@ -1158,7 +927,6 @@ class _CreatePostState extends State<CreatePost> {
     );
   }
 
-
   Future<Map<String, dynamic>> _createPoll({
     required String userId,
     required String message,
@@ -1168,14 +936,13 @@ class _CreatePostState extends State<CreatePost> {
     required List<String> pollOptions,
     required String pollEnd,
   }) async {
-
     final prefs = await SharedPreferences.getInstance();
     String? token = prefs.getString('token');
 
-    final url = Uri.parse('${base_url}townhall/create_poll'); // Replace with your API base URL
+    final url = Uri.parse('${base_url}townhall/create_poll');
     final headers = {
       'Content-Type': 'application/x-www-form-urlencoded',
-      'Authorization': '${token}', // Replace with actual JWT token
+      'Authorization': '${token}',
     };
 
     final body = {
@@ -1184,7 +951,7 @@ class _CreatePostState extends State<CreatePost> {
       'org_id': orgId,
       'townhall_id': townhallId,
       'posted_as_a_leader': leadershipPost,
-      'poll_options': jsonEncode(pollOptions), // Convert list to JSON string
+      'poll_options': jsonEncode(pollOptions),
       'poll_end': pollEnd,
     };
 
@@ -1200,7 +967,7 @@ class _CreatePostState extends State<CreatePost> {
     required String leadershipPost,
     List<File>? files,
   }) async {
-    final url = Uri.parse('${base_url}townhall/createPost'); // Replace with your API base URL
+    final url = Uri.parse('${base_url}townhall/createPost');
     var request = http.MultipartRequest('POST', url);
 
     final prefs = await SharedPreferences.getInstance();
@@ -1210,7 +977,7 @@ class _CreatePostState extends State<CreatePost> {
       throw Exception("Authorization token is missing. Please log in again.");
     }
 
-    request.headers['Authorization'] = '$token'; // Corrected token format
+    request.headers['Authorization'] = '$token';
 
     request.fields['user_id'] = userId;
     request.fields['message'] = message;
@@ -1229,7 +996,6 @@ class _CreatePostState extends State<CreatePost> {
 
     return jsonDecode(responseBody);
   }
-
 
   Future<void> imageEditor(context, File image, int index) async {
     final croppedFile = await ImageCropper().cropImage(
@@ -1254,8 +1020,7 @@ class _CreatePostState extends State<CreatePost> {
             width: 520,
             height: 520,
           ),
-          viewPort:
-              const CroppieViewPort(width: 480, height: 480, type: 'circle'),
+          viewPort: const CroppieViewPort(width: 480, height: 480, type: 'circle'),
           enableExif: true,
           enableZoom: true,
           showZoomer: true,
@@ -1269,8 +1034,8 @@ class _CreatePostState extends State<CreatePost> {
   }
 
   updateMediaList(File reSized, int index) async {
-    int positionIndex = editedMediaList
-        .indexWhere((media) => media.indexID.toString() == index.toString());
+    int positionIndex =
+        editedMediaList.indexWhere((media) => media.indexID.toString() == index.toString());
 
     images[index].indexID = index;
     images[index].file = File(reSized.path);
@@ -1331,10 +1096,9 @@ class _CreatePostState extends State<CreatePost> {
           return MediaItem(
             indexID: z++,
             file: File(file.path),
-            fileSize:
-                await _getType(File(file.path)).toString() == 'MediaType.video'
-                    ? await _getSize(File(file.path))
-                    : 0.0,
+            fileSize: await _getType(File(file.path)).toString() == 'MediaType.video'
+                ? await _getSize(File(file.path))
+                : 0.0,
             type: _getType(File(file.path)),
             wasEdited: false,
             startPos: 0.0,
@@ -1345,10 +1109,9 @@ class _CreatePostState extends State<CreatePost> {
           return MediaItem(
             indexID: i++,
             file: File(file.path),
-            fileSize:
-                await _getType(File(file.path)).toString() == 'MediaType.video'
-                    ? await _getSize(File(file.path))
-                    : 0.0,
+            fileSize: await _getType(File(file.path)).toString() == 'MediaType.video'
+                ? await _getSize(File(file.path))
+                : 0.0,
             type: _getType(File(file.path)),
             wasEdited: false,
             startPos: 0.0,
@@ -1379,8 +1142,6 @@ class _CreatePostState extends State<CreatePost> {
   }
 
   Future<double> _getSize(File file) async {
-    VideoPlayerController controller = VideoPlayerController.file(file);
-    await controller.initialize();
     int fileSizeInBytes = await file.length();
     double fileSizeInMB = fileSizeInBytes / (1024 * 1024);
     return fileSizeInMB;

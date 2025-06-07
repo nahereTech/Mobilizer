@@ -47,6 +47,28 @@ class _LoginScreenState extends State<LoginScreen> {
         deviceToken = 'web_token_${DateTime.now().millisecondsSinceEpoch}';
       });
     });
+
+    // Fetch and display current_org in a SnackBar
+    // _showCurrentOrgSnackBar();
+  }
+
+  Future<void> _showCurrentOrgSnackBar() async {
+    String? currentOrg = await AppSharedPreferences.getValue(key: 'current_org');
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text(
+            currentOrg != null
+                ? 'Current Organization: $currentOrg'
+                : 'No Current Organization Set',
+            style: const TextStyle(color: Colors.white),
+          ),
+          backgroundColor: Colors.blue,
+          behavior: SnackBarBehavior.floating,
+          duration: const Duration(seconds: 3),
+        ),
+      );
+    });
   }
 
   Future<void> _loadBackgroundImage() async {
@@ -90,7 +112,7 @@ class _LoginScreenState extends State<LoginScreen> {
 
       try {
         final response = await http.post(
-          Uri.parse('${base_url}/user/login'),
+          Uri.parse('${base_url}user/login'),
           headers: {'Content-Type': 'application/x-www-form-urlencoded'},
           body: {
             'email': _controllerEmail.text,

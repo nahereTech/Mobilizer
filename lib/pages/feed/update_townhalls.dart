@@ -402,7 +402,7 @@ class _UpdateMyTownhallState extends State<UpdateMyTownhall> {
           themeProvider.isDarkMode ? const Color(0xFF121212) : Colors.white,
       appBar: AppBar(
         title: Text(
-          'Update My Townhalls',
+          'Update My Townhalls.',
           style: TextStyle(
             color: themeProvider.isDarkMode ? Colors.white : Colors.black,
           ),

@@ -1,4 +1,4 @@
-package com.example.mobilizer
+package com.nahere.mobilizer
 
 import io.flutter.embedding.android.FlutterActivity
 

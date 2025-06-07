@@ -7,6 +7,7 @@ import 'package:mobilizer/common/common/theme_provider.dart';
 import 'package:provider/provider.dart';
 import 'package:shimmer/shimmer.dart';
 import '../../pages/onboarding/onboarding_other_townhalls.dart';
+import '../feed/feed_outside.dart';
 
 //TO DO, if already a member, move to next page
 
@@ -42,7 +43,8 @@ class _OnboardingWorldTownhallsState extends State<OnboardingWorldTownhalls> {
 
   Future<void> _checkMembershipStatus() async {
     final token = await AppSharedPreferences.getValue(key: 'token');
-    const url = '${domainName}/api/orgs/has_user_joined_this_org?org_id=1'; // Assuming org_id=1 for "World"
+    final orgId = await AppSharedPreferences.getValue(key: 'current_org') ?? '182'; // Fallback to '182' if not found
+    final url = '${base_url}orgs/has_user_joined_this_org?org_id=$orgId';
 
     try {
       final response = await http.get(
@@ -57,7 +59,7 @@ class _OnboardingWorldTownhallsState extends State<OnboardingWorldTownhalls> {
           WidgetsBinding.instance.addPostFrameCallback((_) {
             Navigator.of(context).pushReplacement(
               MaterialPageRoute(
-                builder: (context) => const OnboardingOtherTownhalls(),
+                builder: (context) => const FeedOutsidePage(),
               ),
             );
           });
@@ -81,7 +83,7 @@ class _OnboardingWorldTownhallsState extends State<OnboardingWorldTownhalls> {
 
   Future<void> _fetchInitialTownhallData() async {
     const int initialParentId = 1;
-    final url = '${domainName}/api/townhall/fetch_townhall_children?parent_id=$initialParentId';
+    final url = '${base_url}townhall/fetch_townhall_children?parent_id=$initialParentId';
     final token = await AppSharedPreferences.getValue(key: 'token');
 
     try {
@@ -119,7 +121,7 @@ class _OnboardingWorldTownhallsState extends State<OnboardingWorldTownhalls> {
             _requiredFields = [true];
             // 2. Initialize _isFetchingChildren with false for the first level
             _isFetchingChildren = [false];
-            _orgID = data['org_id'] ?? '1';
+            _orgID = data['org_id'] ?? '182';
             _isLoading = false;
           });
         } else {
@@ -144,7 +146,7 @@ class _OnboardingWorldTownhallsState extends State<OnboardingWorldTownhalls> {
 
 
   Future<void> _fetchChildren(int parentId, int level) async {
-    final url = '${domainName}/api/townhall/fetch_townhall_children?parent_id=$parentId';
+    final url = '${base_url}townhall/fetch_townhall_children?parent_id=$parentId';
     final token = await AppSharedPreferences.getValue(key: 'token');
 
 
@@ -234,7 +236,11 @@ class _OnboardingWorldTownhallsState extends State<OnboardingWorldTownhalls> {
   }
 
   Future<void> _handleJoin() async {
-    if (_orgID == null) {
+    final token = await AppSharedPreferences.getValue(key: 'token');
+    final orgId = await AppSharedPreferences.getValue(key: 'current_org');
+    print("it is this : ${orgId}");
+    
+    if (orgId == null) {
       Fluttertoast.showToast(
         msg: 'Organization ID not available',
         toastLength: Toast.LENGTH_LONG,
@@ -245,7 +251,6 @@ class _OnboardingWorldTownhallsState extends State<OnboardingWorldTownhalls> {
       return;
     }
 
-    final token = await AppSharedPreferences.getValue(key: 'token');
     if (_formKey.currentState?.validate() ?? false) {
       final url = '${base_url}townhall/join_org_with_townhalls';
       final selectedTownhalls = _selectedValues.whereType<int>().toList();
@@ -262,7 +267,7 @@ class _OnboardingWorldTownhallsState extends State<OnboardingWorldTownhalls> {
             'Authorization': token.toString(),
           },
           body: jsonEncode({
-            'org_id': _orgID,
+            'org_id': orgId,
             'townhalls': selectedTownhalls,
             'with_townhalls': true,
           }),
@@ -280,10 +285,10 @@ class _OnboardingWorldTownhallsState extends State<OnboardingWorldTownhalls> {
             ),
           );
           
-          // Navigate to OnboardingOtherTownhalls instead of just popping
+          // Navigate to FeedOutsidePage
           Navigator.of(context).pushReplacement(
             MaterialPageRoute(
-              builder: (context) => const OnboardingOtherTownhalls(),
+              builder: (context) => const FeedOutsidePage(),
             ),
           );
         } else {
@@ -334,13 +339,13 @@ class _OnboardingWorldTownhallsState extends State<OnboardingWorldTownhalls> {
               ),
               const SizedBox(height: 20),
               const Text(
-                'Join "World" Community',
+                'Select Your Location',
                 style: TextStyle(fontSize: 22, fontWeight: FontWeight.bold),
                 textAlign: TextAlign.center,
               ),
               const SizedBox(height: 10),
               const Text(
-                'Select the townhalls you belong to under "World". It should be your location of residence.',
+                'Select your location. It should be your location of residence.',
                 style: TextStyle(fontSize: 16, color: Colors.grey),
                 textAlign: TextAlign.center,
               ),

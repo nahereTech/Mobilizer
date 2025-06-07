@@ -24,7 +24,6 @@ import 'package:mobilizer/pages/onboarding/onboarding.dart';
 import 'package:mobilizer/pages/post/post_details.dart';
 import 'package:package_info_plus/package_info_plus.dart';
 import 'package:mobilizer/common/common/constants.dart';
-import 'package:uni_links/uni_links.dart';
 import '../onboarding/set_org.dart';
 
 class SplashScreen extends StatefulWidget {
@@ -60,7 +59,7 @@ class _SplashScreenState extends State<SplashScreen> {
 
     _initVersion();
     getDeviceToken();
-    _setupFirebaseMessaging();
+    // _setupFirebaseMessaging(); // Temporarily disabled for debugging
     _loadPreferencesWithRetry().then((_) {
       _startNavigationTimer(); // Start navigation after preferences are loaded
     });
@@ -123,11 +122,13 @@ class _SplashScreenState extends State<SplashScreen> {
       print('SplashScreen _startNavigationTimer: Token: $getToken');
 
       if (getToken != null && getToken != "") {
+        print('SplashScreen _startNavigationTimer: Navigating to FeedOutsidePage');
         Navigator.of(context).pushAndRemoveUntil(
           MaterialPageRoute(builder: (context) => const FeedOutsidePage()),
           (route) => false,
         );
       } else {
+        print('SplashScreen _startNavigationTimer: Navigating to OnBoardingPage');
         Navigator.of(context).pushAndRemoveUntil(
           MaterialPageRoute(builder: (context) => const OnBoardingPage()),
           (route) => false,
@@ -139,11 +140,15 @@ class _SplashScreenState extends State<SplashScreen> {
 
   void _setupFirebaseMessaging() {
     FirebaseMessaging.instance.getInitialMessage().then((event) async {
-      await Firebase.initializeApp();
-      if (event != null) {
-        LocalNotificationService.showNotificationOnForeground(event);
-        notificationMsg = "${event.notification?.title} I am coming from terminated state";
-        print('SplashScreen _setupFirebaseMessaging: $notificationMsg');
+      try {
+        await Firebase.initializeApp();
+        if (event != null) {
+          LocalNotificationService.showNotificationOnForeground(event);
+          notificationMsg = "${event.notification?.title} I am coming from terminated state";
+          print('SplashScreen _setupFirebaseMessaging: $notificationMsg');
+        }
+      } catch (e) {
+        print('SplashScreen _setupFirebaseMessaging: Error initializing Firebase: $e');
       }
     });
 
@@ -244,12 +249,16 @@ class _SplashScreenState extends State<SplashScreen> {
 
   @override
   Widget build(BuildContext context) {
-    SystemChrome.setSystemUIOverlayStyle(const SystemUiOverlayStyle(
-      statusBarColor: Colors.transparent,
-      statusBarIconBrightness: Brightness.dark,
-      systemNavigationBarColor: Colors.transparent,
-      systemNavigationBarIconBrightness: Brightness.dark,
-    ));
+    try {
+      SystemChrome.setSystemUIOverlayStyle(const SystemUiOverlayStyle(
+        statusBarColor: Colors.transparent,
+        statusBarIconBrightness: Brightness.dark,
+        systemNavigationBarColor: Colors.transparent,
+        systemNavigationBarIconBrightness: Brightness.dark,
+      ));
+    } catch (e) {
+      print('SplashScreen: Error setting System UI Overlay: $e');
+    }
 
     print('SplashScreen build: _backgroundImage before rendering: $_backgroundImage');
 
@@ -260,68 +269,88 @@ class _SplashScreenState extends State<SplashScreen> {
       );
     }
 
-    return Scaffold(
-      body: DecoratedBox(
-        decoration: BoxDecoration(
-          image: DecorationImage(
-            image: _backgroundImage!.startsWith('http')
-                ? NetworkImage(_backgroundImage!)
-                : AssetImage(_backgroundImage!) as ImageProvider,
-            fit: BoxFit.cover,
-            colorFilter: ColorFilter.mode(
-              Colors.black.withOpacity(0.5),
-              BlendMode.darken,
-            ),
-            onError: (exception, stackTrace) {
-              print('SplashScreen build: Image loading error: $exception');
-              setState(() {
-                _backgroundImage = 'images/mobilizer_bg.jpg';
-              });
-            },
-          ),
-        ),
-        child: Stack(
-          children: [
-            Center(
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.center,
+    return Builder(
+      builder: (BuildContext context) {
+        try {
+          return Scaffold(
+            body: DecoratedBox(
+              decoration: BoxDecoration(
+                image: DecorationImage(
+                  image: _backgroundImage!.startsWith('http')
+                      ? NetworkImage(_backgroundImage!)
+                      : AssetImage(_backgroundImage!) as ImageProvider,
+                  fit: BoxFit.cover,
+                  colorFilter: ColorFilter.mode(
+                    Colors.black.withOpacity(0.5),
+                    BlendMode.darken,
+                  ),
+                  onError: (exception, stackTrace) {
+                    print('SplashScreen: Image loading error: $exception');
+                    print(stackTrace);
+                    setState(() {
+                      _backgroundImage = 'images/mobilizer_bg.jpg';
+                    });
+                  },
+                ),
+              ),
+              child: Stack(
                 children: [
-                  GestureDetector(
-                    onTap: _handleLogoTap,
-                    child: CircleAvatar(
-                      radius: 60,
-                      backgroundImage: _logoImage?.startsWith('http') ?? false
-                          ? NetworkImage(_logoImage!)
-                          : AssetImage(_logoImage ?? 'images/mobilizer_logo.jpg') as ImageProvider,
+                  Center(
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        GestureDetector(
+                          onTap: _handleLogoTap,
+                          child: CircleAvatar(
+                            radius: 60,
+                            backgroundImage: _logoImage?.startsWith('http') ?? false
+                                ? NetworkImage(_logoImage!)
+                                : AssetImage(_logoImage ?? 'images/mobilizer_logo.jpg') as ImageProvider,
+                            onBackgroundImageError: (exception, stackTrace) {
+                              print('SplashScreen: Logo image loading error: $exception');
+                              print(stackTrace);
+                              setState(() {
+                                _logoImage = 'images/mobilizer_logo.jpg';
+                              });
+                            },
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                  Align(
+                    alignment: FractionalOffset.bottomCenter,
+                    child: Padding(
+                      padding: const EdgeInsets.only(bottom: 20),
+                      child: Text(
+                        _orgName ?? 'Mobilizer',
+                        style: const TextStyle(
+                          color: Colors.white,
+                          fontSize: 16,
+                          fontWeight: FontWeight.bold,
+                          shadows: [
+                            Shadow(
+                              blurRadius: 2.0,
+                              color: Colors.black54,
+                              offset: Offset(1.0, 1.0),
+                            ),
+                          ],
+                        ),
+                      ),
                     ),
                   ),
                 ],
               ),
             ),
-            Align(
-              alignment: FractionalOffset.bottomCenter,
-              child: Padding(
-                padding: const EdgeInsets.only(bottom: 20),
-                child: Text(
-                  _orgName ?? 'Mobilizer',
-                  style: const TextStyle(
-                    color: Colors.white,
-                    fontSize: 16,
-                    fontWeight: FontWeight.bold,
-                    shadows: [
-                      Shadow(
-                        blurRadius: 2.0,
-                        color: Colors.black54,
-                        offset: Offset(1.0, 1.0),
-                      ),
-                    ],
-                  ),
-                ),
-              ),
-            ),
-          ],
-        ),
-      ),
+          );
+        } catch (e, stackTrace) {
+          print('SplashScreen: Render error: $e');
+          print(stackTrace);
+          return const Scaffold(
+            body: Center(child: Text('Error rendering splash screen')),
+          );
+        }
+      },
     );
   }
 

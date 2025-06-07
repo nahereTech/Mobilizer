@@ -7,6 +7,7 @@ import '../search/search.dart';
 import '../feed/feed_outside.dart';
 import '../notifications/notifications.dart';
 import '../message/conversations_history.dart';
+import '../khost.dart';
 
 class BottomMenu extends StatefulWidget {
   final double bottomMenuProgress;
@@ -86,6 +87,7 @@ class _BottomMenuState extends State<BottomMenu> {
                     Navigator.push(
                       context,
                       MaterialPageRoute(builder: (context) => Search()),
+                      // MaterialPageRoute(builder: (context) => KHostPage()),
                     );
                   },
                 ),
