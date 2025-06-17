@@ -85,7 +85,7 @@ dependencies:
   flutter_datetime_picker_plus: ^2.0.0+1
   font_awesome_flutter: ^10.3.0
   video_player: ^2.5.1
-  flick_video_player: ^0.9.0
+  #flick_video_player: ^0.9.0
   #video_editor: ^3.0.0
   video_thumbnail: ^0.5.3
   #ffmpeg_kit_flutter_min: ^6.0.2
