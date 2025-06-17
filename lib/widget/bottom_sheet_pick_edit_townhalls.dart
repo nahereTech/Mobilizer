@@ -114,7 +114,7 @@ class _TownhallBottomSheetEditState extends State<TownhallBottomSheetEdit> {
   }
 
   Future<void> _fetchChildren(int parentId, int level) async {
-    final url = '${domainName}/api/townhall/fetch_townhall_children';
+    final url = '${base_url}townhall/fetch_townhall_children';
     final token = await AppSharedPreferences.getValue(key: 'token');
     try {
       // Comment 3: Set loading state for the next dropdown level before fetching
@@ -291,7 +291,7 @@ class _TownhallBottomSheetEditState extends State<TownhallBottomSheetEdit> {
   Future<void> _submitForm() async {
     final token = await AppSharedPreferences.getValue(key: 'token');
     if (_formKey.currentState?.validate() ?? false) {
-      final url = '${domainName}/api/townhall/update_joined_org_townhalls';
+      final url = '${base_url}townhall/update_joined_org_townhalls';
       final selectedTownhalls = _selectedValues.whereType<int>().toList();
       setState(() {
         _isSubmitting = true;
