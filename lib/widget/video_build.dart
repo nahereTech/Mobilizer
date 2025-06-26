@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:video_player/video_player.dart';
-import 'package:flick_video_player/flick_video_player.dart';
+//import 'package:flick_video_player/flick_video_player.dart';
 
 class VideoBuild extends StatefulWidget {
   final String videoUrl;
@@ -18,7 +18,7 @@ class VideoBuild extends StatefulWidget {
 }
 
 class _VideoBuildState extends State<VideoBuild> {
-  late FlickManager _flickManager;
+  //late FlickManager _flickManager;
   late VideoPlayerController _videoPlayerController;
   double vHeight = 0.0;
   double vWidth = 0.0;
@@ -32,10 +32,10 @@ class _VideoBuildState extends State<VideoBuild> {
 
   void _initializeVideoPlayerController() async {
     setState(() {
-      _flickManager = FlickManager(
-          autoPlay: widget.autoplay,
-          videoPlayerController:
-              VideoPlayerController.network(widget.videoUrl));
+      // _flickManager = FlickManager(
+      //     autoPlay: widget.autoplay,
+      //     videoPlayerController:
+      //         VideoPlayerController.network(widget.videoUrl));
     });
 
     await _videoPlayerController.initialize();
@@ -48,7 +48,7 @@ class _VideoBuildState extends State<VideoBuild> {
 
   @override
   void dispose() {
-    _flickManager.dispose();
+    //_flickManager.dispose();
     _videoPlayerController.dispose();
     super.dispose();
   }
@@ -97,16 +97,17 @@ class _VideoBuildState extends State<VideoBuild> {
                   child: Container(
                     width: vWidth,
                     height: vHeight,
-                    child: FlickVideoPlayer(
-                      flickManager: _flickManager,
-                      flickVideoWithControls: FlickVideoWithControls(
-                        controls: FlickPortraitControls(),
-                        videoFit: orientation == Orientation.portrait
-                            ? BoxFit.fitWidth
-                            : BoxFit.fitHeight,
-                        aspectRatioWhenLoading: 4 / 3,
-                      ),
-                    ),
+                    child: SizedBox()
+                    // FlickVideoPlayer(
+                    //   flickManager: _flickManager,
+                    //   flickVideoWithControls: FlickVideoWithControls(
+                    //     controls: FlickPortraitControls(),
+                    //     videoFit: orientation == Orientation.portrait
+                    //         ? BoxFit.fitWidth
+                    //         : BoxFit.fitHeight,
+                    //     aspectRatioWhenLoading: 4 / 3,
+                    //   ),
+                    // ),
                   ),
                 );
               }),
