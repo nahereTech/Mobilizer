@@ -1192,6 +1192,7 @@ PODS:
     - Flutter
   - audioplayers_darwin (0.0.1):
     - Flutter
+    - FlutterMacOS
   - BoringSSL-GRPC (0.0.37):
     - BoringSSL-GRPC/Implementation (= 0.0.37)
     - BoringSSL-GRPC/Interface (= 0.0.37)
@@ -1394,9 +1395,6 @@ PODS:
     - gRPC-Core/Privacy (= 1.69.0)
   - gRPC-Core/Interface (1.69.0)
   - gRPC-Core/Privacy (1.69.0)
-  - image_cropper (0.0.4):
-    - Flutter
-    - TOCropViewController (~> 2.6.1)
   - image_picker_ios (0.0.1):
     - Flutter
   - leveldb-library (1.22.6)
@@ -1431,10 +1429,9 @@ PODS:
   - shared_preferences_foundation (0.0.1):
     - Flutter
     - FlutterMacOS
-  - sqflite (0.0.3):
+  - sqflite_darwin (0.0.4):
     - Flutter
     - FlutterMacOS
-  - TOCropViewController (2.6.1)
   - url_launcher_ios (0.0.1):
     - Flutter
   - video_player_avfoundation (0.0.1):
@@ -1445,10 +1442,11 @@ PODS:
     - libwebp
   - webview_flutter_wkwebview (0.0.1):
     - Flutter
+    - FlutterMacOS
 
 DEPENDENCIES:
   - app_links (from `.symlinks/plugins/app_links/ios`)
-  - audioplayers_darwin (from `.symlinks/plugins/audioplayers_darwin/ios`)
+  - audioplayers_darwin (from `.symlinks/plugins/audioplayers_darwin/darwin`)
   - cloud_firestore (from `.symlinks/plugins/cloud_firestore/ios`)
   - connectivity_plus (from `.symlinks/plugins/connectivity_plus/ios`)
   - device_info_plus (from `.symlinks/plugins/device_info_plus/ios`)
@@ -1459,18 +1457,17 @@ DEPENDENCIES:
   - flutter_keyboard_visibility (from `.symlinks/plugins/flutter_keyboard_visibility/ios`)
   - flutter_local_notifications (from `.symlinks/plugins/flutter_local_notifications/ios`)
   - fluttertoast (from `.symlinks/plugins/fluttertoast/ios`)
-  - image_cropper (from `.symlinks/plugins/image_cropper/ios`)
   - image_picker_ios (from `.symlinks/plugins/image_picker_ios/ios`)
   - multi_image_picker_plus (from `.symlinks/plugins/multi_image_picker_plus/ios`)
   - package_info_plus (from `.symlinks/plugins/package_info_plus/ios`)
   - path_provider_foundation (from `.symlinks/plugins/path_provider_foundation/darwin`)
   - share_plus (from `.symlinks/plugins/share_plus/ios`)
   - shared_preferences_foundation (from `.symlinks/plugins/shared_preferences_foundation/darwin`)
-  - sqflite (from `.symlinks/plugins/sqflite/darwin`)
+  - sqflite_darwin (from `.symlinks/plugins/sqflite_darwin/darwin`)
   - url_launcher_ios (from `.symlinks/plugins/url_launcher_ios/ios`)
   - video_player_avfoundation (from `.symlinks/plugins/video_player_avfoundation/darwin`)
   - video_thumbnail (from `.symlinks/plugins/video_thumbnail/ios`)
-  - webview_flutter_wkwebview (from `.symlinks/plugins/webview_flutter_wkwebview/ios`)
+  - webview_flutter_wkwebview (from `.symlinks/plugins/webview_flutter_wkwebview/darwin`)
 
 SPEC REPOS:
   trunk:
@@ -1495,13 +1492,12 @@ SPEC REPOS:
     - libwebp
     - nanopb
     - PromisesObjC
-    - TOCropViewController
 
 EXTERNAL SOURCES:
   app_links:
     :path: ".symlinks/plugins/app_links/ios"
   audioplayers_darwin:
-    :path: ".symlinks/plugins/audioplayers_darwin/ios"
+    :path: ".symlinks/plugins/audioplayers_darwin/darwin"
   cloud_firestore:
     :path: ".symlinks/plugins/cloud_firestore/ios"
   connectivity_plus:
@@ -1522,8 +1518,6 @@ EXTERNAL SOURCES:
     :path: ".symlinks/plugins/flutter_local_notifications/ios"
   fluttertoast:
     :path: ".symlinks/plugins/fluttertoast/ios"
-  image_cropper:
-    :path: ".symlinks/plugins/image_cropper/ios"
   image_picker_ios:
     :path: ".symlinks/plugins/image_picker_ios/ios"
   multi_image_picker_plus:
@@ -1536,8 +1530,8 @@ EXTERNAL SOURCES:
     :path: ".symlinks/plugins/share_plus/ios"
   shared_preferences_foundation:
     :path: ".symlinks/plugins/shared_preferences_foundation/darwin"
-  sqflite:
-    :path: ".symlinks/plugins/sqflite/darwin"
+  sqflite_darwin:
+    :path: ".symlinks/plugins/sqflite_darwin/darwin"
   url_launcher_ios:
     :path: ".symlinks/plugins/url_launcher_ios/ios"
   video_player_avfoundation:
@@ -1545,12 +1539,12 @@ EXTERNAL SOURCES:
   video_thumbnail:
     :path: ".symlinks/plugins/video_thumbnail/ios"
   webview_flutter_wkwebview:
-    :path: ".symlinks/plugins/webview_flutter_wkwebview/ios"
+    :path: ".symlinks/plugins/webview_flutter_wkwebview/darwin"
 
 SPEC CHECKSUMS:
   abseil: a05cc83bf02079535e17169a73c5be5ba47f714b
   app_links: 76b66b60cc809390ca1ad69bfd66b998d2387ac7
-  audioplayers_darwin: ccf9c770ee768abb07e26d90af093f7bab1c12ab
+  audioplayers_darwin: 4f9ca89d92d3d21cec7ec580e78ca888e5fb68bd
   BoringSSL-GRPC: dded2a44897e45f28f08ae87a55ee4bcd19bc508
   BSImagePicker: 57900b323f951711608acaf97d52e9183530cb6d
   cloud_firestore: 2fdc3301bcc486957ff7fa705430a185468c1987
@@ -1577,7 +1571,6 @@ SPEC CHECKSUMS:
   GoogleUtilities: 00c88b9a86066ef77f0da2fab05f65d7768ed8e1
   "gRPC-C++": cc207623316fb041a7a3e774c252cf68a058b9e8
   gRPC-Core: 860978b7db482de8b4f5e10677216309b5ff6330
-  image_cropper: 655b3ba703c9e15e3111e79151624d6154288774
   image_picker_ios: 7fe1ff8e34c1790d6fff70a32484959f563a928a
   leveldb-library: cc8b8f8e013647a295ad3f8cd2ddf49a6f19be19
   libwebp: 02b23773aedb6ff1fd38cec7a77b81414c6842a8
@@ -1588,12 +1581,11 @@ SPEC CHECKSUMS:
   PromisesObjC: f5707f49cb48b9636751c5b2e7d227e43fba9f47
   share_plus: 50da8cb520a8f0f65671c6c6a99b3617ed10a58a
   shared_preferences_foundation: 9e1978ff2562383bd5676f64ec4e9aa8fa06a6f7
-  sqflite: c35dad70033b8862124f8337cc994a809fcd9fa3
-  TOCropViewController: edfd4f25713d56905ad1e0b9f5be3fbe0f59c863
+  sqflite_darwin: 20b2a3a3b70e43edae938624ce550a3cbf66a3d0
   url_launcher_ios: 694010445543906933d732453a59da0a173ae33d
   video_player_avfoundation: 2cef49524dd1f16c5300b9cd6efd9611ce03639b
   video_thumbnail: b637e0ad5f588ca9945f6e2c927f73a69a661140
-  webview_flutter_wkwebview: 45a041c7831641076618876de3ba75c712860c6b
+  webview_flutter_wkwebview: 1821ceac936eba6f7984d89a9f3bcb4dea99ebb2
 
 PODFILE CHECKSUM: a57f30d18f102dd3ce366b1d62a55ecbef2158e5
 

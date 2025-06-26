@@ -17,13 +17,11 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "1.3.56"
-
   _macros:
     dependency: transitive
     description: dart
     source: sdk
     version: "0.3.3"
-
   after_layout:
     dependency: transitive
     description:
@@ -303,17 +301,7 @@ packages:
       sha256: f71061c654a3380576a52b451dd5532377954cf9dbd272a78fc8479606670803
       url: "https://pub.dev"
     source: hosted
-
     version: "1.4.0"
-  charcode:
-    dependency: transitive
-    description:
-      name: charcode
-      sha256: fb0f1107cac15a5ea6ef0a6ef71a807b9e4267c713bb93e00e92d737cc8dbd8a
-      url: "https://pub.dev"
-    source: hosted
-    version: "1.4.0"
-
   checked_yaml:
     dependency: transitive
     description:
@@ -705,17 +693,7 @@ packages:
       sha256: "577aeac8ca414c25333334d7c4bb246775234c0e44b38b10a82b559dd4d764e7"
       url: "https://pub.dev"
     source: hosted
-
     version: "1.0.0"
-  flick_video_player:
-    dependency: "direct main"
-    description:
-      name: flick_video_player
-      sha256: f011cc28c6e4932485ac3a9d09ccacd25d9d430c99090480ccad2f5ebca9366e
-      url: "https://pub.dev"
-    source: hosted
-    version: "0.9.0"
-
   flutter:
     dependency: "direct main"
     description: flutter
@@ -2071,25 +2049,7 @@ packages:
       sha256: ddfa8d30d89985b96407efce8acbdd124701f96741f2d981ca860662f1c0dc02
       url: "https://pub.dev"
     source: hosted
-
     version: "15.0.0"
-  wakelock_plus:
-    dependency: transitive
-    description:
-      name: wakelock_plus
-      sha256: a474e314c3e8fb5adef1f9ae2d247e57467ad557fa7483a2b895bc1b421c5678
-      url: "https://pub.dev"
-    source: hosted
-    version: "1.3.2"
-  wakelock_plus_platform_interface:
-    dependency: transitive
-    description:
-      name: wakelock_plus_platform_interface
-      sha256: e10444072e50dbc4999d7316fd303f7ea53d31c824aa5eb05d7ccbdd98985207
-      url: "https://pub.dev"
-    source: hosted
-    version: "1.2.3"
-
   watcher:
     dependency: transitive
     description:
