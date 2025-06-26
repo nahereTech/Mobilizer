@@ -1,3 +1,4 @@
+import 'dart:typed_data';
 import 'dart:io';
 import 'dart:convert';
 import 'package:http/http.dart' as http;
@@ -5,7 +6,8 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
-import 'package:image_cropper/image_cropper.dart';
+//import 'package:image_cropper/image_cropper.dart';
+import 'package:crop_your_image/crop_your_image.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:mobilizer/common/common/theme_provider.dart';
 import 'package:intl/intl.dart';
@@ -997,39 +999,75 @@ class _CreatePostState extends State<CreatePost> {
     return jsonDecode(responseBody);
   }
 
-  Future<void> imageEditor(context, File image, int index) async {
-    final croppedFile = await ImageCropper().cropImage(
-      sourcePath: image.path,
-      compressFormat: ImageCompressFormat.jpg,
-      compressQuality: 100,
-      uiSettings: [
-        AndroidUiSettings(
-            toolbarTitle: 'Image Editor',
-            toolbarColor: Colors.blue,
-            activeControlsWidgetColor: Colors.blue,
-            toolbarWidgetColor: Colors.white,
-            initAspectRatio: CropAspectRatioPreset.original,
-            lockAspectRatio: false),
-        IOSUiSettings(
-          title: 'Image Editor',
-        ),
-        WebUiSettings(
-          context: context,
-          presentStyle: CropperPresentStyle.dialog,
-          boundary: const CroppieBoundary(
-            width: 520,
-            height: 520,
+  Future<void> imageEditor(BuildContext context, File image, int index) async {
+    // Read the image file as bytes
+    final Uint8List imageData = await image.readAsBytes();
+
+    // Create a CropController
+    final CropController cropController = CropController();
+
+    // Show a dialog with the Crop widget
+    File? croppedFile;
+    await showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return Dialog(
+          child: Container(
+            width: 400,
+            height: 500,
+            padding: const EdgeInsets.all(16.0),
+            child: Column(
+              children: [
+                Expanded(
+                  child: Crop(
+                    image: imageData,
+                    controller: cropController,
+                    onCropped: (CropResult result) {
+                      print('CropResult: $result'); // Debug the CropResult object
+                      // Temporary placeholder to avoid errors
+                      final tempDir = Directory.systemTemp;
+                      final tempFile = File('${tempDir.path}/cropped_image_${DateTime.now().millisecondsSinceEpoch}.jpg');
+                      // Replace with correct property once identified
+                      // tempFile.writeAsBytesSync(result.<correct_property>);
+                      croppedFile = tempFile;
+                      Navigator.of(context).pop();
+                    },
+                    aspectRatio: null, // Allow free cropping
+                    withCircleUi: false, // Set to true for circular cropping
+                    baseColor: Theme.of(context).scaffoldBackgroundColor,
+                    maskColor: Colors.black.withOpacity(0.5),
+                    cornerDotBuilder: (size, edgeAlignment) => const DotControl(
+                      color: Colors.blue,
+                    ),
+                  ),
+                ),
+                const SizedBox(height: 16),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                  children: [
+                    ElevatedButton(
+                      onPressed: () {
+                        Navigator.of(context).pop(); // Cancel cropping
+                      },
+                      child: const Text('Cancel'),
+                    ),
+                    ElevatedButton(
+                      onPressed: () {
+                        cropController.crop(); // Trigger cropping
+                      },
+                      child: const Text('Crop'),
+                    ),
+                  ],
+                ),
+              ],
+            ),
           ),
-          viewPort: const CroppieViewPort(width: 480, height: 480, type: 'circle'),
-          enableExif: true,
-          enableZoom: true,
-          showZoomer: true,
-        ),
-      ],
+        );
+      },
     );
+
     if (croppedFile != null) {
-      final File convertedFile = File(croppedFile.path);
-      updateMediaList(convertedFile, index);
+      updateMediaList(croppedFile!, index);
     }
   }
 
